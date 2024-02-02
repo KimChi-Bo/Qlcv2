@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>VNPT quản lý công việc</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+<div class="main-wrapper">
+    <div class="main-title">Thêm nhân viên</div>
+    <span id="errMessage" name="errMessage" style="color:red;" th:text="${errMessage}"></span>
+    <div class="box-form-wrapper">
+        <form id="AddStaffForm" name="AddStaffForm" method="post" th:action="@{/}" th:object="${AddStaffForm}">
+            <div class="box-form" >
+                <div class="row">
+                    <div class="col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <div class="label-text">Tổ công tác</div>
+                            <select  id="dropDownListGroup"  class="form-control selectjs"  th:field = "*{id_group}">
+                                <option value="0">Chọn tổ </option>
+                                <option th:each="group : ${groupList}" th:value="${group.getId()}" th:text="${group.getName()}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="label-text">Tên nhân viên</div>
+                            <input class="form-control selectjs" id="name" name="name" type="text" th:field = "*{name}">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-text">Ghi chú</div>
+                            <input class="form-control selectjs" id="note" name="note" type="text" th:field = "*{note}">
+                        </div>
+                    </div>
+                </div>
+                <div class="actions tright">
+                    <input class="btn btn-main" type="button" onclick="add()" value="ADD">
+                </div>
+                <div class="divider-gray"></div>
+            </div>
+        </form>
+        <div class="box-form-result">
+            <div class="body">
+                <div class="table-wrapper">
+                    <table class="table-result footable-jscus" id="planWeekTable">
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tổ công tác</th>
+                            <th>Tên nhân viên</th>
+                            <th>Ghi chú</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        <tr th:each="staff : ${staffNewList}">
+                            <td th:utext="${staff.getId()}"></td>
+                            <td th:utext="${staff.getGroupName()}"></td>
+                            <td th:utext="${staff.getName()}"></td>
+                            <td th:utext="${staff.getNote()}"></td>
+                            <td class="wp-10"><a th:href="@{/addstaff/} + ${staff.getId()}"><span class="icon -ap icon-delete"></span></a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/jquery-3.4.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.ja.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootbox.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/base.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+
+    var Globals = {
+        contextroot : /*[[@{/}]]*/''
+    }
+    function add() {
+        $('#AddStaffForm').attr('action', Globals.contextroot + 'addstaff/add');
+        $('#AddStaffForm').submit();
+        return false;
+    }
+    function remove() {
+        $('#AddStaffForm').attr('action', Globals.contextroot + 'addstaff/add');
+        $('#AddStaffForm').submit();
+        return false;
+    }
+
+</script>
+<div th:replace="fragments/footer"></div>
+</body>
+
+</html>

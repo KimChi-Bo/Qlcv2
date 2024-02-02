@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JSchool</title>
+</head>
+
+<body>
+    <div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+    <div class="main-wrapper">
+        <ul class="breadcrumb">
+            <li><a href="#">Kế hoạch tuần</a></li>
+        </ul>
+        <div class="main-title">Kế hoạch tuần</div>
+        <div class="box-form-wrapper">
+            <div class="form-title">Thông tin tìm kiếm</div>
+            <div class="box-form" id="searchData">
+                <div class="row">
+                    <div class="col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <div class="label-text">Năm</div>
+                            <select id="cboplanYear" class="form-control selectjs"> </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <div class="label-text">Tuần</div>
+                            <select id="cboplanWeek" class="form-control selectjs"> </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <div class="label-text">Đơn vị</div>
+                            <select id="cbogroup" class="form-control selectjs"> </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions tright">
+                    <button class="btn btn-main" type="button" onclick="Search.get(0)">TÌM KIẾM</button>
+                </div>
+                <div class="divider-gray"></div>
+            </div>
+            <div class="box-form-result">
+                <div class="head">
+                    <div class="pull-right">
+                        <a href="#" data-toggle="modal" class="btn btn-main" onclick="exportPlan.word()"><span
+                                class="icon -ap icon-file-word"></span> Kết xuất kế hoạch</a>
+                        <a href="#" data-toggle="modal" class="btn btn-main" onclick="exportPlan.table()"><span
+                                class="icon -ap icon-file-word"></span> Kết xuất dữ liệu</a>
+                        <a style="display: none;" id="btnAddPlanWeek" href="#" data-toggle="modal" class="btn btn-main"
+                            onclick="weekPlan.show()"><span class="icon -ap icon-plus2"></span> Cập nhật kế hoạch
+                            tuần</a>
+
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="body" id="box-table">
+                    <div class="landscape_A4_page table-wrapper">
+                        <table class="table-result footable-jscus" id="planWeekTable">
+                            <thead>
+                                <th>Ngày </th>
+                                <th>Nhân viên </th>
+                                <th>KPI</th>
+                                <th>Nội dung kế </br> hoạch dự kiến</th>
+                                <th>Nội dung kế </br>hoạch phê duyệt</th>
+                                <th>Lĩnh vực</th>
+                                <th>Nội dung </br>đã thực hiện</th>
+                                <th>Kế quả</th>
+                                <th>Ghi chú</th>
+                                <th class="td-action">Thao tác</th>
+                            </thead>
+                            <tbody id="planWeekTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modalDayReport" class="modal fade popup-box" role="dialog" data-backdrop="static"
+            data-keyboard="false">
+            <div class="modal-dialog" style="width: 80%; overflow-y: auto;">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close -ap icon-close" data-dismiss="modal"></button>
+                        <h2 class="popup-title">Cập nhật báo cáo cuối ngày</h2>
+                        <div class="form-group" id="formDayReport">
+                            <input type="hidden" id="dayhidplanId" value="0">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Nội dung kế hoạch dự kiến<span
+                                                class="input-required">*</span>
+                                        </div>
+                                        <textarea rows="10" id="daytxtplanContent" type="text" autocomplete="off"
+                                            class="form-control" placeholder="Nội dung kế hoạch dự kiến"
+                                            readonly></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Nội dung kế hoạch phê duyệt<span
+                                                class="input-required">*</span>
+                                        </div>
+                                        <textarea rows="10" id="daytxtapprovedContent" type="text" autocomplete="off"
+                                            class="form-control" placeholder="Nội dung kế hoạch phê duyệt"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider-gray"></div>
+                        <div class="actions center">
+                            <button type="button" class="btn btn-main" onclick="dayReport.save()">Cập
+                                nhật</button>
+                            <button type="button" class="btn btn-second" data-dismiss="modal">Hủy bỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modalWeekPlan" class="modal fade popup-box" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" style="width: 80%; overflow-y: auto;">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close -ap icon-close" data-dismiss="modal"></button>
+                        <h2 class="popup-title">Cập nhật kế hoạc tuần</h2>
+                        <div class="form-group" id="formWeekPlan">
+                            <input type="hidden" id="weekhidplanId" value="0">
+                            <input type="hidden" id="weekidId" value="0">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Nhân viên</div>
+                                        <select id="weekcbostaffId" class="form-control selectjs"> </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Ngày</div>
+                                        <select id="weekcboplanDate" class="form-control selectjs"> </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Chọn KPI</div>
+                                        <select id="weekcbokpiUserId" class="form-control selectjs"> </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Nội dung kế hoạch</div>
+                                        <textarea id="weektxtplanContent" type="text" autocomplete="off"
+                                            class="form-control" placeholder="Nội dung kế hoạch"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Thời gian bắt đầu</div>
+                                        <input id="weektxtstartDate" type="text" autocomplete="off" class="form-control"
+                                            placeholder="Thời gian bắt đầu">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Số giờ hoàn thành</div>
+                                        <input id="weektxtplanTime" type="text" autocomplete="off" class="form-control"
+                                            placeholder="Số giờ hoàn thành">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider-gray"></div>
+                        <div class="actions center">
+                            <button type="button" class="btn btn-main" onclick="weekPlan.save()">Cập nhật</button>
+                            <button type="button" class="btn btn-second" data-dismiss="modal">Hủy bỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            initControl();
+            initEvnet();
+            Search.get(1, 10);
+        });
+
+        function initControl() {
+            const week = [{ "code": "1", "name": "1" }, { "code": "2", "name": "2" }, { "code": "3", "name": "3" }, { "code": "4", "name": "4" }, { "code": "5", "name": "5" }, { "code": "6", "name": "6" }, { "code": "7", "name": "7" }, { "code": "8", "name": "8" }, { "code": "9", "name": "9" }, { "code": "10", "name": "10" }, { "code": "11", "name": "11" }, { "code": "12", "name": "12" }, { "code": "13", "name": "13" }, { "code": "14", "name": "14" }, { "code": "15", "name": "15" }, { "code": "16", "name": "16" }, { "code": "17", "name": "17" }, { "code": "18", "name": "18" }, { "code": "19", "name": "19" }, { "code": "20", "name": "20" }, { "code": "21", "name": "21" }, { "code": "22", "name": "22" }, { "code": "23", "name": "23" }, { "code": "24", "name": "24" }, { "code": "25", "name": "25" }, { "code": "26", "name": "26" }, { "code": "27", "name": "27" }, { "code": "28", "name": "28" }, { "code": "29", "name": "29" }, { "code": "30", "name": "30" }, { "code": "31", "name": "31" }, { "code": "32", "name": "32" }, { "code": "33", "name": "33" }, { "code": "34", "name": "34" }, { "code": "35", "name": "35" }, { "code": "36", "name": "36" }, { "code": "37", "name": "37" }, { "code": "38", "name": "38" }, { "code": "39", "name": "39" }, { "code": "40", "name": "40" }, { "code": "41", "name": "41" }, { "code": "42", "name": "42" }, { "code": "43", "name": "43" }, { "code": "44", "name": "44" }, { "code": "45", "name": "45" }, { "code": "46", "name": "46" }, { "code": "47", "name": "47" }, { "code": "48", "name": "48" }, { "code": "49", "name": "49" }, { "code": "50", "name": "50" }, { "code": "51", "name": "51" }, { "code": "52", "name": "52" }]
+            ComboUtil.select2Load('cboplanWeek', week, 'code,code,name');
+
+            const year = [{ "code": "2024", "name": "2024" }, { "code": "2025", "name": "2025" }, { "code": "2026", "name": "2026" }]
+            ComboUtil.select2Load('cboplanYear', year, 'code,code,name');
+
+            var lstGroups = "[[${groups}]]";
+            var elem = document.createElement('textarea');
+            elem.innerHTML = lstGroups;
+            var lstGr = elem.value;
+            console.log(`JSON.parse(lstGr)`, JSON.parse(lstGr))
+            ComboUtil.select2Load('cbogroup', JSON.parse(lstGr), 'id,id,groupName');
+
+
+            var lstUsers = "[[${lstUsers}]]";
+            elem = document.createElement('textarea');
+            elem.innerHTML = lstUsers;
+            var lstU = elem.value;
+            ComboUtil.select2Load('weekcbostaffId', JSON.parse(lstU), 'id,id,name');
+
+            $('#weektxtstartDate').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm:ss',
+            });
+            var lstRole = "[[${role}]]";
+
+            if (lstRole.indexOf('C') >= 0) {
+                $('#btnAddPlanWeek').show();
+            }
+
+        }
+
+        function initEvnet() {
+            $("#modalDayReport").on("hidden.bs.modal", function () {
+                dayReport.reset();
+            });
+
+            $("#modalWeekPlan").on("hidden.bs.modal", function () {
+                weekPlan.reset();
+            });
+
+            $('#weekcbostaffId').on('change', function (e) {
+                var objParam = new Object();
+                let id = $(this).val();
+                if (id > 0) {
+                    const rt = $.ajax({
+                        url: '/api/v1/plan/get-kpi-staff/' + id,
+                        type: "GET",
+                        dataType: 'json',
+                        error: function (data) {
+                            toastr.error('Tải danh sách KPI lỗi')
+                        },
+                        success: function (data) {
+                            if (data.result == "Success") {
+                                $('#weekcbokpiUserId').html("");
+                                ComboUtil.select2Load('weekcbokpiUserId', data.data, 'id,id,name', undefined, true);
+                            } else {
+                                toastr.error('Tải danh sách KPI thất bại')
+                            }
+                        }
+                    })
+                } else {
+                    $('#weekcbokpiUserId').html("");
+                }
+            })
+
+        }
+
+        var DATA = [];
+        var Search = {
+            get: function () {
+                var lstRole = "[[${role}]]";
+                // planWeekTableBody
+                var objForm = new Object();
+                FormUtil.setFormToObject('searchData', '', objForm);
+                var lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);
+                var obj = {
+                    "startDate": DateUtil.conver(lstDayOfWeek[0].value),
+                    "endDate": DateUtil.conver(lstDayOfWeek[5].value),
+                    "group": objForm.group
+                }
+                $.ajax({
+                    url: '/api/v1/plan/get-by-group',
+                    type: "GET",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: obj,
+                    error: function (data) {
+                        toastr.error('Lưu báo cáo ngày thất bại')
+                    },
+                    success: function (data) {
+                        if (data.result == "Success") {
+                            DATA = data.data;
+                            var lstDate = [];
+                            $.each(lstDayOfWeek, function (index, value) {
+                                var item = new Object();
+                                var newArray = data.data.filter(function (el) {
+                                    return el.planDate == value.value;
+                                });
+                                if (newArray && newArray.length > 0) {
+                                    $.each(newArray, function (i, v) {
+                                        v.planDateText = value.name;
+                                        lstDate.push(v);
+                                    })
+                                } else {
+                                    item = {
+                                        "planId": 0,
+                                        "planDate": value.value,
+                                        "planDateText": value.name,
+                                        "planContent": "",
+                                        "planStatus": ""
+                                    }
+                                    lstDate.push(item);
+                                }
+                            });
+
+                            const result = lstDate.reduce(function (r, a) {
+                                r[a.planDate] = r[a.planDate] || [];
+                                r[a.planDate].push(a);
+                                return r;
+                            }, Object.create(null));
+
+                            var htmlStr = "";
+                            $.each(result, function (index, value) {
+                                $.each(value, function (i, v) {
+                                    htmlStr += `<tr>`;
+                                    if (i == 0) {
+                                        if (value.length > 1) {
+                                            htmlStr += `<td class="tac" rowspan="` + value.length + `">` + v.planDate + ` (` + v.planDateText + `)</td>`;
+                                        } else {
+                                            htmlStr += `<td class="tac">` + v.planDate + ` (` + v.planDateText + `)</td>`;
+                                        }
+                                    }
+                                    htmlStr += `<td>` + (v.staffName || "") + `</td>`;
+                                    htmlStr += `<td>` + (v.kpiName || "") + `</td>`;
+
+                                    let planContent = (v.planContent || '');
+                                    if (v.planTime > 0) {
+                                        planContent += `(<span class="icon -ap icon-access_time bg-danger"></span>` + v.planTime + `)`;
+                                    }
+                                    htmlStr += `<td>` + planContent + `</td>`;
+                                    htmlStr += `<td>` + (v.approvedContent || '') + `</td>`;
+                                    htmlStr += `<td>` + (v.fieldName || '') + `</td>`;
+
+                                    let reportContent = (v.reportContent || '');
+                                    if (v.reportTime > 0) {
+                                        reportContent += `(<span class="icon -ap icon-access_time bg-success"></span>` + v.reportTime + `)`;
+                                    }
+                                    htmlStr += `<td>` + reportContent + `</td>`;
+                                    let status = "";
+                                    let note = "";
+                                    switch (v.planStatus) {
+                                        case "1":
+                                            status = 'Đã xong'
+                                            note = "";
+                                            break;
+                                        case "2":
+                                            status = 'Chưa xong'
+                                            note = (v.reportNote || '');
+                                            break;
+                                        case "3":
+                                            status = 'Pending'
+                                            note = (v.reportNote || '');
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    htmlStr += `<td>` + status + `</td>`;
+                                    let btnStr = "";
+                                    if (v.planId > 0 && lstRole.indexOf('C') >= 0) {
+                                        btnStr = `<a rel="tooltip" title="Cập nhật báo cáo" href="#" onclick="dayReport.show(` + v.planId + `)" class="btn"><span class="icon -ap icon-mode_edit"></span></a>`
+                                    }
+                                    htmlStr += `<td >` + note + `</td>`;
+                                    htmlStr += `<td class="td-action tac">` + btnStr + `</td>`;
+                                    htmlStr += `</tr>`;
+                                })
+                            })
+                            $('#planWeekTableBody').empty().append(htmlStr);
+                            // $('#planWeekTable').bootstrapTable()
+
+                        } else {
+                            toastr.error('Lấy dữ liệu thất bại thất bại! ' + data.MSG)
+                        }
+                    }
+                })
+            }
+        }
+
+        var dayReport = {
+            show: async function (id) {
+                var item = DATA.find(x => x.planId === id);
+                if (item) {
+                    if (!item.approvedContent || item.approvedContent.length <= 0)
+                        item.approvedContent = item.planContent;
+                    FormUtil.setObjectToForm('formDayReport', 'day', item);
+                    $('#modalDayReport').modal({ show: true });
+                } else {
+                    toastr.error(`Không tìm thấy dữ liệu`);
+                    return;
+                }
+            },
+
+            save: async function () {
+                try {
+                    var objData = new Object();
+                    FormUtil.setFormToObject('formDayReport', 'day', objData);
+                    if (!objData.approvedContent || objData.approvedContent.length <= 0) {
+                        toastr.error(`Vui lòng nhập nội dung kế hoạch phê duyệt`)
+                        return;
+                    }
+                    $.ajax({
+                        url: '/api/v1/plan/save-content-aprove',
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(objData),
+                        error: function (data) {
+                            toastr.error('Lưu báo cáo ngày thất bại')
+                        },
+                        success: function (data) {
+                            if (data.result == "Success") {
+                                toastr.success('Lưu thành công')
+                                $('#modalDayReport').modal('hide');
+                                Search.get();
+                            } else {
+                                toastr.error('Lưu thất bại! ' + data.MSG)
+                            }
+                        }
+                    })
+                } catch (e) {
+                    toastr.error(`Cập nhật thất bại`);
+                }
+            },
+            reset: function () {
+                $('#daytxtapprovedContent').val('');
+            }
+        }
+
+
+        var weekPlan = {
+            show: function (obj) {
+                var objForm = new Object();
+                FormUtil.setFormToObject('searchData', '', objForm);
+                const lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);
+
+                $('#weekcboplanDate').html('');
+                ComboUtil.select2Load('weekcboplanDate', lstDayOfWeek, 'value,value,value');
+                $('#modalWeekPlan').modal({ show: true });
+            },
+            save: async function () {
+                try {
+                    var obj = new Object();
+                    FormUtil.setFormToObject('formWeekPlan', 'week', obj);
+                    $.ajax({
+                        url: '/api/v1/plan/save-week-by-staff',
+                        type: "POST",
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(obj),
+                        error: function (xhr, err, status) {
+                            toastr.error('Lưu kế hoạch tuần thất bại')
+                        },
+                        success: function (data) {
+                            if (data.result == "Success") {
+                                toastr.success('Lưu kế hoạch tuần thành công')
+                                $('#modalWeekPlan').modal('hide');
+                                Search.get();
+                            } else {
+                                toastr.error('Lưu kế hoạch tuần thất bại! ' + data.MSG)
+                            }
+                        }
+                    })
+                } catch (e) {
+                    toastr.error(`Cập nhật thất bại`);
+                }
+            },
+            edit: async function (id) {
+                weekPlan.loadKpi();
+                var item = DATA.find(x => x.planId === id);
+                if (item) {
+                    debugger;
+
+                    FormUtil.setObjectToForm('formWeekPlan', 'week', item);
+                    var objForm = new Object();
+
+                    FormUtil.setFormToObject('searchData', '', objForm);
+                    const lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);
+                    $('#weekcboplanDate').html('');
+                    ComboUtil.select2Load('weekcboplanDate', lstDayOfWeek, 'value,value,value');
+                    $('#modalWeekPlan').modal({ show: true });
+                } else {
+                    toastr.error(`Không tìm thấy dữ liệu`);
+                }
+
+
+            },
+            remove: function (id) {
+                if (id > 0) {
+                    DlgUtil.showConfirm(`Bạn có chắc chắn xóa`, function (flag) {
+                        if (flag) {
+
+                            $.ajax({
+                                url: '/api/v1/plan/remove/' + id,
+                                type: "POST",
+                                error: function (data) {
+                                    toastr.error('Lưu báo cáo ngày thất bại')
+                                },
+                                success: function (data) {
+                                    if (data.result == "Success") {
+                                        toastr.success('Lưu báo cáo ngày thành công')
+                                        Search.get();
+                                    } else {
+                                        toastr.error('Lưu báo cáo ngày thất bại! ' + data.MSG)
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            toastr.error(`Chưa cập nhật`);
+                        }
+                    }
+                    )
+                }
+            },
+            reset: function () {
+                $('#formWeekPlan').find('input[type="text"]').val('');
+                $('#formWeekPlan').find('textarea[type="text"]').val('');
+                $('#formWeekPlan').find('select').val('').trigger('change');
+            }
+
+        }
+
+
+        var DateUtil = {
+            calculateDateFromWeekNumAndYear: function (y, w, s) {
+                var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week
+                const firstDate = new Date(y, 0, d);
+                const dateRange = [];
+                var t2 = new Object();
+                t2.value = moment(firstDate, 'DD/MM/YYYY').format("DD/MM/YYYY");
+                t2.name = "Thứ 2";
+                dateRange.push(t2);
+
+                var t3 = new Object();
+                t3.value = moment(firstDate, 'DD/MM/YYYY').add(1, 'days').format("DD/MM/YYYY");
+                t3.name = "Thứ 3";
+                dateRange.push(t3);
+
+                var t4 = new Object();
+                t4.value = moment(firstDate, 'DD/MM/YYYY').add(2, 'days').format("DD/MM/YYYY");
+                t4.name = "Thứ 4";
+                dateRange.push(t4);
+
+                var t5 = new Object();
+                t5.value = moment(firstDate, 'DD/MM/YYYY').add(3, 'days').format("DD/MM/YYYY");
+                t5.name = "Thứ 5";
+                dateRange.push(t5);
+
+                var t6 = new Object();
+                t6.value = moment(firstDate, 'DD/MM/YYYY').add(4, 'days').format("DD/MM/YYYY");
+                t6.name = "Thứ 6";
+                dateRange.push(t6);
+
+                var t7 = new Object();
+                t7.value = moment(firstDate, 'DD/MM/YYYY').add(5, 'days').format("DD/MM/YYYY");
+                t7.name = "Thứ 7";
+                dateRange.push(t7);
+
+                if (s) {
+                    var cn = new Object();
+                    cn.value = moment(firstDate, 'DD/MM/YYYY').add(6, 'days').format("DD/MM/YYYY");
+                    cn.name = "Chủ nhật";
+                    dateRange.push(cn);
+                }
+                return dateRange;
+            },
+            conver: function (input) {
+                var arr = input.split('/');
+                return arr[2] + "-" + arr[1] + '-' + arr[0];
+            },
+            getMYfromWY: function (y, w) {
+                var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week
+                const firstDate = new Date(y, 0, d);
+
+                t2 = moment(firstDate, 'DD/MM/YYYY').format("MM/YYYY");
+
+
+                cn = moment(firstDate, 'DD/MM/YYYY').add(6, 'days').format("MM/YYYY");
+
+                if (t2 == cn) {
+                    return `Tháng ${t2}`;
+                } else {
+                    let arrFd = t2.split('/');
+                    let arrLd = cn.split('/');
+                    if (arrFd[1] == arrLd[1]) {
+                        return `Tháng ${arrFd[0]},${arrLd[0]}/${arrFd[1]}`;
+                    } else {
+                        return `Tháng ${arrFd[0]}/${arrFd[1]},${arrLd[0]}/${arrLd[1]}`;
+                    }
+                }
+            }
+
+
+        }
+
+        var exportPlan = {
+            word: function (data) {
+
+
+                var lstRole = "[[${role}]]";
+                // planWeekTableBody
+                var objForm = new Object();
+                FormUtil.setFormToObject('searchData', '', objForm);
+                var lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek, true);
+
+                var obj = {
+                    "startDate": DateUtil.conver(lstDayOfWeek[0].value),
+                    "endDate": DateUtil.conver(lstDayOfWeek[5].value),
+                    "group": objForm.group
+                }
+                $.ajax({
+                    url: '/api/v1/plan/get-by-group',
+                    type: "GET",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: obj,
+                    error: function (data) {
+                        toastr.error('Lưu báo cáo ngày thất bại')
+                    },
+                    success: function (data) {
+                        if (data.result == "Success") {
+                            var lstDate = [];
+                            $.each(lstDayOfWeek, function (index, value) {
+                                var item = new Object();
+                                var newArray = data.data.filter(function (el) {
+                                    return el.planDate == value.value;
+                                });
+
+
+                                if (newArray && newArray.length > 0) {
+                                    $.each(newArray, function (i, v) {
+                                        v.planDateText = value.name;
+                                        lstDate.push(v);
+                                    })
+                                } else {
+                                    item = {
+                                        "planId": 0,
+                                        "planDate": value.value,
+                                        "planDateText": value.name,
+                                        "planContent": "",
+                                        "planStatus": ""
+                                    }
+                                    lstDate.push(item);
+                                }
+                            });
+
+                            const result = lstDate.reduce(function (r, a) {
+                                r[a.planDate] = r[a.planDate] || [];
+                                r[a.planDate].push(a);
+                                return r;
+                            }, Object.create(null));
+
+
+
+
+
+                            var htmlStr = "";
+
+                            const dv = "TRUNG TÂM CNTT";
+                            const my = DateUtil.getMYfromWY(objForm.planYear, objForm.planWeek)
+                            var body = ``;
+                            var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title><style> body { font-family: 'Times New Roman'; font-size: 12pt } h3, p { margin: 0pt } li, table { margin-top: 0pt; margin-bottom: 0pt } h3 { margin-top: 12pt; margin-bottom: 3pt; page-break-after: avoid; font-family: Arial; font-size: 13pt; font-weight: bold } .Char { margin-top: 5pt; margin-bottom: 5pt; text-align: justify; page-break-before: always; font-family: Tahoma; font-size: 10pt } .Char1CarCharCarCharCarCharCarCharCharCharCharCharCharCharCharCharChar { margin-bottom: 8pt; line-height: 12pt; font-family: Verdana; font-size: 10pt } .BalloonText { font-family: Tahoma; font-size: 8pt } .CharChar2 { margin-bottom: 8pt; line-height: 12pt; font-family: Verdana; font-size: 10pt } .ListBullet { margin-left: 18pt; text-indent: -18pt; font-size: 12pt } .ListParagraph { margin-left: 36pt; font-family: 'Times New Roman'; font-size: 12pt } .NormalWeb { margin-top: 5pt; margin-bottom: 5pt; font-family: 'Times New Roman'; font-size: 12pt } span.Strong { font-weight: bold } </style></head><body>";
+                            var table_header = `
+                                <table id="x" style="width:517.5pt; border-collapse:collapse">
+                                    <tr style="height:89.55pt">
+                                        <td colspan="2" style="width:150.3pt; padding-right:5.4pt; padding-left:5.4pt; vertical-align:top">
+                                            <p style="margin-top:3pt; text-align:center">
+                                                <span
+                                                    style="height:0pt; margin-top:-3pt; text-align:left; display:block; position:absolute; z-index:2"></span>VIỄN
+                                                THÔNG THÁI BÌNH
+                                            </p>
+                                            <p style="margin-top:3pt; text-align:center">
+                                                <span
+                                                    style="height:0pt; margin-top:-3pt; text-align:left; display:block; position:absolute; z-index:1"></span><strong>${dv}</strong>
+                                            </p>
+                                            <p style="text-align:center">
+                                                <span
+                                                    style="height:0pt; text-align:left; display:block; position:absolute; z-index:0"></span><strong>*</strong>
+                                            </p>
+                                        </td>
+                                        <td colspan="4" style="width:150.45pt; padding-right:5.4pt; padding-left:5.4pt; vertical-align:top">
+                                            <p style="text-align:center">
+                                                <strong>LỊCH CÔNG TÁC</strong>
+                                            </p>
+                                            <p style="text-align:center">Tuần ${objForm.planWeek}/${objForm.planYear}</p>
+                                        </td>
+                                        <td colspan="4" style="width:150.35pt; padding-right:5.4pt; padding-left:5.4pt; vertical-align:top">
+                                            <p style="text-align:center">
+                                                <strong><span style="color:#0070c0">${my}</span></strong>
+                                            </p>
+                                            <p style="text-align:center">
+                                                &#xa0;
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr style="height:3.5pt">
+                                        <td
+                                            style="width:47.65pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle">
+                                            <p style="margin-top:6pt; margin-bottom:6pt; text-align:center">
+                                                <strong>Ngày</strong>
+                                            </p>
+                                        </td>
+                                        <td colspan="2"
+                                            style="width:204.45pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle">
+                                            <p style="margin-top:6pt; margin-bottom:6pt; text-align:center">
+                                                <strong>Sáng</strong>
+                                            </p>
+                                        </td>
+                                        <td colspan="6"
+                                            style="width:224pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle">
+                                            <p style="margin-top:6pt; margin-bottom:6pt; text-align:center">
+                                                <strong>Chiều</strong>
+                                            </p>
+                                        </td>
+                                        <td style="vertical-align:top">
+                                        </td>
+                                    </tr>`;
+                            var footer = "</body></html>";
+
+                            $.each(result, function (index, value) {
+                                const lstByGroupName = value.reduce(function (r, a) {
+                                    r[a.groupName] = r[a.groupName] || [];
+                                    r[a.groupName].push(a);
+                                    return r;
+                                }, Object.create(null));
+
+                                let planeDate = index;
+                                let day = lstDayOfWeek.find(m => m.value == index).name;
+
+                                body += `
+                                <tr style="">
+                                    <td rowspan="2"
+                                        style="width:47.65pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle">
+                                        <p style="margin-top:6pt; margin-bottom:6pt; text-align:center">
+                                            ${day}                                            
+                                        </p>
+                                        <p style="margin-top:6pt; margin-bottom:6pt; text-align:center">
+                                            <strong>${planeDate}</strong>
+                                        </p>
+                                    </td>
+                                    <td colspan="4"
+                                        style="width:204.45pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle">
+                                        <p style="margin-top:6pt; margin-bottom:6pt; text-align:justify">
+                                            &#xa0;
+                                        </p>
+                                    </td>
+                                    <td colspan="4"
+                                        style="width:224pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle">
+                                        <p style="margin-top:6pt; margin-left:18pt; margin-bottom:6pt; text-align:justify">
+                                            &#xa0;
+                                        </p>
+                                    </td>
+                                    <td style="vertical-align:top">
+                                    </td>
+                                </tr>`
+
+                                body += `
+                                <tr style="">
+                                    <td colspan="8"
+                                        style="width:439.25pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle">`
+                                console.log(`lstByGroupName`, lstByGroupName)
+                                $.each(lstByGroupName, function (i, v) {
+                                    if (i != undefined && i != 'undefined') {
+                                        body += `
+                                        <p style="margin-top:6pt; margin-bottom:6pt; text-indent:23.3pt; text-align:justify; text-transform: uppercase;">
+                                            ${i}:
+                                        </p>`
+
+
+                                        const outputObj = v.reduce((accum, { staffName, approvedContent }) => {
+                                            if (!accum[staffName]) accum[staffName] = approvedContent;
+                                            else accum[staffName] += '; ' + (approvedContent || '');
+                                            return accum;
+                                            // }
+                                        }, {});
+                                        const lstGroupByStaff = Object.entries(outputObj).map(([staffName, approvedContent]) => ({ staffName, approvedContent }));
+                                        $.each(lstGroupByStaff, function (t, u) {
+                                            if (u.approvedContent != undefined) {
+                                                body += ` 
+                                                <p style="margin-top:6pt; margin-left:41.3pt; margin-bottom:6pt; text-indent:-18pt; text-align:justify">
+                                                    <span>-</span><span
+                                                        style="width:14pt; font:7pt 'Times New Roman'; display:inline-block">
+                                                    </span>Đ/c ${u.staffName}: ${u.approvedContent}
+                                                </p>`
+                                            }
+                                        })
+                                    }
+
+                                })
+
+                                body += `
+                                    <td style="vertical-align:top">
+                                    </td>
+                                </tr>
+                                `
+                            })
+                            var table_close = `</table>`;
+                            var html = header + table_header + body + table_close + footer;
+                            var blob = new Blob(['\ufeff', html], {
+                                type: 'application/msword'
+                            });
+                            // Specify link url
+                            var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+                            // Specify file name
+                            var filename = filename ? filename + '.doc' : 'baocao_' + (Math.random() + 1).toString(36).substring(7) + '.doc';
+                            // Create download link element
+                            var downloadLink = document.createElement("a");
+                            document.body.appendChild(downloadLink);
+                            if (navigator.msSaveOrOpenBlob) {
+                                navigator.msSaveOrOpenBlob(blob, filename);
+                            } else {
+                                // Create a link to the file
+                                downloadLink.href = url;
+                                // Setting the file name
+                                downloadLink.download = filename;
+                                //triggering the function
+                                downloadLink.click();
+                            }
+                            document.body.removeChild(downloadLink);
+                        }
+                    }
+                });
+            },
+            table: function () {
+                var html, link, blob, url, css;
+                css = (
+                    '<style>' +
+                    '@page landscape_A4_page { size:841.9pt 595.3pt; mso-page-orientation:landscape; margin:72.0pt 72.0pt 72.0pt 72.0pt; mso-header-margin:35.45pt; mso-footer-margin:35.45pt; mso-paper-source:0; } .landscape_A4_page { page:landscape_A4_page; }' +
+                    'table { border-collapse: collapse; } td { border: 1px gray solid; padding: 4px; width: 5em; } th { border: 1px gray solid; padding: 4px; width: 5em; }' +
+                    '</style>'
+                );
+
+                html = document.getElementById("box-table").outerHTML;
+                var div = document.createElement('div');
+                // assing your HTML to div's innerHTML
+                div.innerHTML = html;
+                // get all <a> elements from div
+                var elements = div.getElementsByClassName('td-action');
+                // remove all <a> elements
+                while (elements[0])
+                    elements[0].parentNode.removeChild(elements[0])
+                // get div's innerHTML into a new variable
+                var repl = div.innerHTML;
+                blob = new Blob(['\ufeff', css + repl], {
+                    type: 'application/msword'
+                });
+                url = URL.createObjectURL(blob);
+                link = document.createElement('A');
+                link.href = url;
+                // Set default file name. 
+                // Word will append file extension - do not add an extension here.
+                link.download = 'Document';
+                document.body.appendChild(link);
+                if (navigator.msSaveOrOpenBlob) navigator.msSaveOrOpenBlob(blob, 'Document.doc'); // IE10-11
+                else link.click();  // other browsers
+                document.body.removeChild(link);
+            }
+        }
+
+    </script>
+    <div th:replace="fragments/footer"></div>
+</body>
+
+</html>

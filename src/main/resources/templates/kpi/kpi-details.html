@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JSchool</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+<div class="main-wrapper">
+    <div class="main-title">Quản lý KPI</div>
+    <table class="table-result footable-jscus" border="1">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>KPI</th>
+            <th>Trọng số</th>
+            <th th:each="item : ${listStaff}" th:text="${item.name}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item: ${listKpiUserDetails}">
+            <td th:text="${item.stt}"></td>
+            <td th:text="${item.kpi}"></td>
+            <td th:text="${item.weight}"></td>
+            <div th:each="var : ${item.staffWeigh}">
+                <td contenteditable="true" class="editable-cell"
+                    th:data-id="${var.idUser}"
+                    th:data-extra-id="${var.idKpi}"
+                    th:text="${var.weight}">
+                </td>
+            </div>
+        </tr>
+        </tbody>
+    </table>
+    <div class="actions tright" style="margin-left: -20px;">
+        <button class="btn btn-main" type="button" onclick="saveKpiData()">
+            Save
+        </button>
+        <button class="btn btn-main" type="button" onclick="redirectToURL('http://localhost:8001/addkpi')">
+            Cancel
+        </button>
+    </div>
+    <div th:replace="fragments/footer"></div>
+</div>
+</body>
+<script>
+    function redirectToURL(url) {
+        window.location.href = url;
+    }
+
+    function saveKpiData() {
+        var editableCells = document.getElementsByClassName("editable-cell");
+        var dataToSend = [];
+
+        for (var i = 0; i < editableCells.length; i++) {
+            var cell = editableCells[i];
+            var dataId = cell.getAttribute("data-id");
+            var extraDataId = cell.getAttribute("data-extra-id");
+
+            if (dataId !== null && dataId !== undefined) {
+                dataToSend.push({
+                    id: dataId,
+                    extraId: extraDataId,
+                    value: cell.textContent.trim()
+                });
+            }
+        }
+
+        if (dataToSend.length === 0) {
+            console.error('No data to save.');
+            return;
+        }
+
+        fetch('http://localhost:8001/addkpi/save-kpi-details', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataToSend)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Saved successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error saving data:', error);
+            });
+    }
+</script>
+</html>

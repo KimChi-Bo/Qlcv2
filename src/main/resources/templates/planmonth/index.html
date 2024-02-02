@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>VNPT quản lý công việc</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+<div class="main-wrapper">
+    <ul class="breadcrumb">
+        <li><a href="#">Kế hoạch tháng</a></li>
+    </ul>
+    <div class="main-title">Kế hoạch tháng</div>
+    <div class="box-form-wrapper">
+        <div class="form-title">Thông tin tìm kiếm</div>
+        <div class="box-form" id="searchData">
+            <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <div class="label-text">Năm</div>
+                        <select id="cboplanYear" class="form-control selectjs"> </select>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <div class="label-text">Tháng</div>
+                        <select id="cboplanMonth" class="form-control selectjs"> </select>
+                    </div>
+                </div>
+            </div>
+            <div class="actions tright">
+                <button class="btn btn-main" type="button" onclick="Search.get(0)">TÌM KIẾM</button>
+            </div>
+            <div class="divider-gray"></div>
+        </div>
+        <div class="box-form-result">
+            <div th:if="${role.contains('D')}" class="head">
+                <div class="pull-right">
+                    <a href="#" data-toggle="modal" class="btn btn-main" onclick="monthPlan.show()"><span
+                            class="icon -ap icon-plus2"></span> Cập nhật kế hoạch tháng</a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="body">
+                <div class="table-wrapper">
+                    <table class="table-result footable-jscus" id="planWeekTable">
+                        <thead>
+                        <th class=" wp-5">Tên </th>
+                        <th class="wp-10">Lĩnh vực</th>
+                        <th class="wp-15">Nội dung kế hoạch</th>
+                        <th class="wp-10">Tháng/Năm</th>
+                        <th th:if="${role.contains('D')}" class="wp-10">Thao tác</th>
+                        </thead>
+                        <tbody id="planMonthTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalMonthPlan" class="modal fade popup-box" role="dialog" data-backdrop="static"
+         data-keyboard="false">
+        <div class="modal-dialog" style="width: 80%; overflow-y: auto;">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close -ap icon-close" data-dismiss="modal"></button>
+                    <h2 class="popup-title">Cập nhật kế hoạch tháng</h2>
+                    <div class="form-group" id="formMonthPlan">
+                        <input type="hidden" id="monthidplanId" value="0">
+                        <input type="hidden" id="monthidId" value="0">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <div class="label-text">Lĩnh vực</div>
+                                    <select id="fields" class="form-control selectjs">
+                                        <option th:each="option : ${fields}" th:value="${option.id}"
+                                                th:text="${option.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <div class="label-text">Nội dung kế hoạch</div>
+                                    <textarea id="monthtxtplanContent" type="text" autocomplete="off"
+                                              class="form-control" placeholder="Nội dung kế hoạch"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <div class="label-text">Tháng</div>
+                                    <select id="cboMonths" class="form-control selectjs"> </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <div class="label-text">Năm</div>
+                                    <input type="text" id="years" disabled> </input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="divider-gray"></div>
+                    <div class="actions center">
+                        <button type="button" class="btn btn-main" onclick="monthPlan.save()">Cập nhật</button>
+                        <button type="button" class="btn btn-second" data-dismiss="modal">Hủy bỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    const date = new Date();
+    $(document).ready(function () {
+
+        initControl();
+        initEvnet();
+        Search.get(1, 10);
+    });
+
+    function initControl() {
+        const month = [{"code": "1", "name": "1"}, {"code": "2", "name": "2"}, {"code": "3", "name": "3"}, {"code": "4", "name": "4"}, {"code": "5", "name": "5"}, {"code": "6", "name": "6"}, {"code": "7", "name": "7"}, {"code": "8", "name": "8"}, {"code": "9", "name": "9"}, {"code": "10", "name": "10"}, {"code": "11", "name": "11"}, {"code": "12", "name": "12"}]
+        ComboUtil.select2Load('cboplanMonth', month, 'code,code,name');
+
+        const year = [{"code": "2024", "name": "2024"}, {"code": "2025", "name": "2025"}, {"code": "2026", "name": "2026"}]
+        ComboUtil.select2Load('cboplanYear', year, 'code,code,name');
+
+
+        const m = date.getMonth();
+
+        const months = [];
+        for (let i = m; i < 12; i++) {
+            months.push({"code": i + 1, "name": i + 1});
+        }
+
+        ComboUtil.select2Load('cboMonths', months, 'code,code,name');
+
+        $('#years').val(date.getFullYear());
+    }
+
+    function initEvnet() {
+        $("#modalMonthPlan").on("hidden.bs.modal", function () {
+            monthPlan.reset();
+        });
+    }
+
+    var DATA = [];
+    var Search = {
+
+        get: function () {
+            // planMonthTableBody
+            var obj = {
+                "month": $('#cboplanMonth').val(),
+                "year": $('#cboplanYear').val()
+            }
+            $.ajax({
+                url: '/api/v1/planmonth/search-all',
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json',
+                data: obj,
+                error: function (data) {
+                    toastr.error('Lấy thông tin thất bại')
+                },
+                success: function (data) {
+                    if (data.result == "Success") {
+                        DATA = data.data;
+
+                        var htmlStr = "";
+                        $.each(DATA, function (index, value) {
+                            htmlStr += `<tr>`;
+                            htmlStr += `<td>` + (value.nameUser || '') + `</td>`;
+                            htmlStr += `<td class="wp-10">` + (value.field || '') + `</td>`;
+                            htmlStr += `<td>` + (value.content || '') + `</td>`;
+                            htmlStr += `<td>` + (value.monthYear || '') + `</td>`;
+
+                            if (value.showBtnDelFlg) {
+                                let btnDel = `<a rel="tooltip" title="Xóa kế hoạch" href="#" onclick="monthPlan.remove(` + value.planId + `)" class="btn"><span class="icon -ap icon-delete"></span></a>`
+
+                                htmlStr += `<td class="wp-10">` + btnDel + `</td>`;
+                            }
+                            htmlStr += `</tr>`;
+                        })
+
+                        $('#planMonthTableBody').empty().append(htmlStr);
+                        $('#planMonthTable').bootstrapTable()
+
+                    } else {
+                        toastr.error('Lấy thông tin thất bại! ' + data.MSG)
+                    }
+                }
+            })
+        }
+    }
+
+    var monthPlan = {
+        show: function () {
+            $('#modalMonthPlan').modal({show: true});
+        },
+
+        save: async function () {
+            try {
+                var obj = {
+                    "idField": $('#fields').val(),
+                    "content": $('#monthtxtplanContent').val(),
+                    "month": $('#cboMonths').val(),
+                    "year": $('#years').val(),
+                }
+
+                $.ajax({
+                    url: '/api/v1/planmonth/save-month',
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    error: function (xhr, err, status) {
+                        toastr.error('Lưu kế hoạch tháng thất bại')
+                    },
+                    success: function (data) {
+                        if (data.result == "Success") {
+                            toastr.success('Lưu kế hoạch tháng thành công')
+                            $('#modalMonthPlan').modal('hide');
+                            Search.get();
+                        } else {
+                            toastr.error('Lưu kế hoạch tháng thất bại! ' + data.MSG)
+                        }
+                    }
+                })
+            } catch (e) {
+                toastr.error(`Cập nhật thất bại`);
+            }
+        },
+        edit: async function (id) {
+
+        },
+        remove: function (id) {
+            DlgUtil.showConfirm(`Bạn có chắc chắn xóa`, function (flag) {
+                if (flag) {
+                    $.ajax({
+                        url: '/api/v1/planmonth/remove/' + id,
+                        type: "POST",
+                        error: function (data) {
+                            toastr.error('Xóa kế hoạch thất bại')
+                        },
+                        success: function (data) {
+                            if (data.result == "Success") {
+                                toastr.success('Xóa kế hoạch thành công')
+                                Search.get();
+                            } else {
+                                toastr.error('Xóa kế hoạch thất bại! ' + data.MSG)
+                            }
+                        }
+                    });
+                }
+                else {
+                    toastr.error(`Chưa cập nhật`);
+                }
+            })
+        },
+        reset: function () {
+            $('#formMonthPlan').find('textarea[type="text"]').val('');
+            $('#formMonthPlan').find('select').val('').trigger('change');
+        }
+
+    }
+
+</script>
+<div th:replace="fragments/footer"></div>
+</body>
+
+</html>

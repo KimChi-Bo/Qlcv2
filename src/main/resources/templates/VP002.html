@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>VNPT quản lý công việc</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+<div class="main-wrapper">
+    <h1 class="main-title">Đăng kí tài khoản</h1>
+    <span id="errMessage" name="errMessage" style="color:red;" th:text="${errMessage}"></span>
+    <form id="VP002Form" name="VP002Form" method="post" th:action="@{/}" th:object="${VP002Form}">
+        <div class="box-form-wrapper">
+            <table>
+                <tr class="form-group">
+                    <td>
+                        <span class="label-text">Tên nhân viên:</span>
+                    </td>
+                    <td >
+                        <select  id="dropDownListUser" class="form-control selectjs" th:field = "*{idStaff}">
+                            <option value="0">select option</option>
+                            <option th:each="staff : ${listStaff}" th:value="${staff.getId()}" th:text="${staff.getName()}"></option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr  class="form-group">
+                    <td>
+                        <span class="label-text">Tên đăng nhập:</span>
+                    </td>
+                    <td>
+                        <input id="userName" name="userName" class="form-control selectjs" type="text" th:field = "*{userName}">
+                    </td>
+                </tr>
+                <tr  class="form-group">
+                    <td>
+                        <span class="label-text">Mật khẩu:</span>
+                    </td>
+                    <td>
+                        <input id="password" type="password" class="form-control selectjs"  th:field = "*{pass}">
+                    </td>
+                </tr>
+                <tr  class="form-group">
+                    <td>
+                        <span  class="label-text">Quyền hạn:</span>
+                    </td>
+                    <td>
+                        <select  id="dropDownListField"  class="form-control selectjs"  th:field = "*{role}">
+                            <option value="0">select option</option>
+                            <option th:each="role : ${listRole}" th:value="${role.getId()}" th:text="${role.getName()}"></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="actions tright">
+                        <input class="btn btn-main" type="button" onclick="register()" value="Register">
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </form>
+    <div class="box-form-result">
+        <div class="body">
+            <div class="table-wrapper">
+                <table class="table-result footable-jscus" id="planWeekTable">
+                    <tr>
+                        <th>Mã</th>
+                        <th>UserName</th>
+                        <th>Pass</th>
+                        <th>Quyền</th>
+                        <th>Ghi chú</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    <tr th:each="user : ${userList}">
+                        <td th:utext="${user.getId()}"></td>
+                        <td th:utext="${user.getUserName()}"></td>
+                        <td th:utext="${user.getPass()}"></td>
+                        <td th:utext="${user.getRole()}"></td>
+                        <td>A: Admin, B: Lãnh đạo tt, C: Tổ trưởng, D: Nhân viên </td>
+                        <td><a th:href="@{/register/} + ${user.getId()}"><span class="icon -ap icon-delete"></span></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/jquery-3.4.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.ja.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootbox.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/base.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    var Globals = {
+        contextroot : /*[[@{/}]]*/''
+    }
+
+    function register() {
+        $('#VP002Form').attr('action', Globals.contextroot + 'register/add');
+        $('#VP002Form').submit();
+        return false;
+    }
+
+</script>
+<div th:replace="fragments/footer"></div>
+</body>
+
+</html>

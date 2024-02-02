@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>QLCV</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+<div class="main-wrapper">
+    <ul class="breadcrumb">
+        <li><a href="#">Kế hoạch tuần</a></li>
+    </ul>
+    <div class="main-title">Kế hoạch tuần</div>
+    <div class="box-form-wrapper">
+        <div class="form-title">Thông tin tìm kiếm</div>
+        <div class="box-form" id="searchData">
+            <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <div class="label-text">Năm</div>
+                        <select id="cboplanYear" class="form-control selectjs"> </select>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <div class="label-text">Tuần</div>
+                        <select id="cboplanWeek" class="form-control selectjs"> </select>
+                    </div>
+                </div>
+            </div>
+            <div class="actions tright">
+                <button class="btn btn-main" type="button" onclick="Search.get(0)">TÌM KIẾM</button>
+            </div>
+            <div class="divider-gray"></div>
+        </div>
+        <div class="box-form-result">
+            <div class="head">
+                <div class="pull-right">
+                    <a href="#" data-toggle="modal" class="btn btn-main" onclick="weekPlan.show()"><span
+                            class="icon -ap icon-plus2"></span> Cập nhật kế hoạch tuần</a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="body">
+                <div class="table-wrapper"></div>
+                <div style="overflow-x: auto">
+                    <table class="table-result table-responsive" id="planWeekTable">
+                        <thead>
+                        <th>Ngày </th>
+                        <th>KPI</th>
+                        <th>Nội dung kế </br> hoạch dự kiến</th>
+                        <th>Nội dung kế </br>hoạch phê duyệt</th>
+                        <th>Lĩnh vực</th>
+                        <th>Nội dung </br>đã thực hiện</th>
+                        <th>Kế quả</th>
+                        <th>Ghi chú</th>
+                        <th>Thao tác</th>
+                        </thead>
+                        <tbody id="planWeekTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalWeekPlan" class="modal fade popup-box" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width: 80%; overflow-y: auto;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close -ap icon-close" data-dismiss="modal"></button>
+                <h2 class="popup-title">Cập nhật kế hoạc tuần</h2>
+                <div class="form-group" id="formWeekPlan">
+                    <input type="hidden" id="weekhidplanId" value="0">
+                    <input type="hidden" id="weekidId" value="0">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Ngày</div>
+                                <select id="weekcboplanDate" class="form-control selectjs"> </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Chọn KPI</div>
+                                <select id="weekcbokpiUserId" class="form-control selectjs"> </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Nội dung kế hoạch</div>
+                                <textarea id="weektxtplanContent" type="text" autocomplete="off"
+                                          class="form-control" placeholder="Nội dung kế hoạch"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Thời gian bắt đầu</div>
+                                <input id="weektxtstartDate" type="text" autocomplete="off" class="form-control"
+                                       placeholder="Thời gian bắt đầu">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Số giờ hoàn thành</div>
+                                <input id="weektxtplanTime" type="text" autocomplete="off" class="form-control"
+                                       placeholder="Số giờ hoàn thành">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="divider-gray"></div>
+                <div class="actions center">
+                    <button type="button" class="btn btn-main" onclick="weekPlan.save()">Cập nhật</button>
+                    <button type="button" class="btn btn-second" data-dismiss="modal">Hủy bỏ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalDayReport" class="modal fade popup-box" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width: 80%; overflow-y: auto;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close -ap icon-close" data-dismiss="modal"></button>
+                <h2 class="popup-title">Cập nhật báo cáo cuối ngày</h2>
+                <div class="form-group" id="formDayReport">
+                    <input type="hidden" id="dayhidplanId" value="0">
+                    <input type="hidden" id="dayhidid" value="0">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Ngày<span class="input-required">*</span></div>
+                                <input id="daytxtreportDate" type="text" autocomplete="off" class="form-control"
+                                       placeholder="Ngày">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Nội dung báo cáo<span class="input-required">*</span>
+                                </div>
+                                <textarea id="daytxtreportContent" type="text" autocomplete="off"
+                                          class="form-control" placeholder="Nội dung kế hoạch"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <div class="label-text">Số giờ hoàn thành<span class="input-required">*</span>
+                                </div>
+                                <input id="daytxtreportTime" type="text" autocomplete="off" class="form-control"
+                                       placeholder="Số giờ hoàn thành">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                            <span style="padding-left: 15px">Kết quả</label>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <div class="label-text">Trạng thái công việc<span
+                                                class="input-required">*</span>
+                                        </div>
+                                        <select id="daycboreportStatus" class="form-control selectjs">
+                                            <option value="1">Xong</option>
+                                            <option value="2">Chưa làm</option>
+                                            <option value="3">Pending</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12" id="daydivReason" style="display: none;">
+                                    <div class="form-group">
+                                        <div class="label-text">Lý do<span class="input-required">*</span></div>
+                                        <textarea id="daytxtreportReason" type="text" autocomplete="off"
+                                                  class="form-control" placeholder="Lý do"></textarea>
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+                <div class="divider-gray"></div>
+                <div class="actions center">
+                    <button type="button" class="btn btn-main" onclick="dayReport.save()">Cập
+                        nhật</button>
+                    <button type="button" class="btn btn-second" data-dismiss="modal">Hủy bỏ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        initControl();
+        initEvnet();
+        Search.get(1, 10);
+    });
+
+    function initControl() {
+        const week = [{ "code": "1", "name": "1" }, { "code": "2", "name": "2" }, { "code": "3", "name": "3" }, { "code": "4", "name": "4" }, { "code": "5", "name": "5" }, { "code": "6", "name": "6" }, { "code": "7", "name": "7" }, { "code": "8", "name": "8" }, { "code": "9", "name": "9" }, { "code": "10", "name": "10" }, { "code": "11", "name": "11" }, { "code": "12", "name": "12" }, { "code": "13", "name": "13" }, { "code": "14", "name": "14" }, { "code": "15", "name": "15" }, { "code": "16", "name": "16" }, { "code": "17", "name": "17" }, { "code": "18", "name": "18" }, { "code": "19", "name": "19" }, { "code": "20", "name": "20" }, { "code": "21", "name": "21" }, { "code": "22", "name": "22" }, { "code": "23", "name": "23" }, { "code": "24", "name": "24" }, { "code": "25", "name": "25" }, { "code": "26", "name": "26" }, { "code": "27", "name": "27" }, { "code": "28", "name": "28" }, { "code": "29", "name": "29" }, { "code": "30", "name": "30" }, { "code": "31", "name": "31" }, { "code": "32", "name": "32" }, { "code": "33", "name": "33" }, { "code": "34", "name": "34" }, { "code": "35", "name": "35" }, { "code": "36", "name": "36" }, { "code": "37", "name": "37" }, { "code": "38", "name": "38" }, { "code": "39", "name": "39" }, { "code": "40", "name": "40" }, { "code": "41", "name": "41" }, { "code": "42", "name": "42" }, { "code": "43", "name": "43" }, { "code": "44", "name": "44" }, { "code": "45", "name": "45" }, { "code": "46", "name": "46" }, { "code": "47", "name": "47" }, { "code": "48", "name": "48" }, { "code": "49", "name": "49" }, { "code": "50", "name": "50" }, { "code": "51", "name": "51" }, { "code": "52", "name": "52" }]
+        ComboUtil.select2Load('cboplanWeek', week, 'code,code,name');
+        var currentDate = new Date();
+        startDate = new Date(currentDate.getFullYear(), 0, 1);
+        let days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+        let weekNumber = Math.ceil(days / 7);
+        $('#cboplanWeek').val(weekNumber).trigger('change');
+
+        const year = [{ "code": "2024", "name": "2024" }, { "code": "2025", "name": "2025" }, { "code": "2026", "name": "2026" }]
+        ComboUtil.select2Load('cboplanYear', year, 'code,code,name');
+        $('#cboplanYear').val(new Date().getFullYear()).trigger('change');
+
+        $('#weektxtstartDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm:ss',
+        });
+
+        $('#daytxtreportDate').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            language: 'vi'
+        }).val();
+
+        $('#daycboreportStatus').select2();
+        $('#daycboreportStatus').change(function (e) {
+            let val = $(this).val();
+            if (val == 2 || val == 3) {
+                $('#daydivReason').show();
+            } else {
+                $('#daydivReason').hide();
+                $('#daytxtreportReason').val('');
+            }
+
+        })
+
+    }
+
+    function initEvnet() {
+        $("#modalWeekPlan").on("hidden.bs.modal", function () {
+            weekPlan.reset();
+        });
+        $("#modalDayReport").on("hidden.bs.modal", function () {
+            dayReport.reset();
+        });
+    }
+
+    var DATA = [];
+    var Search = {
+        get: function () {
+            // planWeekTableBody
+            var objForm = new Object();
+            FormUtil.setFormToObject('searchData', '', objForm);
+            var lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);
+            var obj = {
+                "startDate": DateUtil.conver(lstDayOfWeek[0].value),
+                "endDate": DateUtil.conver(lstDayOfWeek[5].value)
+            }
+            $.ajax({
+                url: '/api/v1/plan/get',
+                type: "GET",
+                dataType: 'json',
+                contentType: 'application/json',
+                data: obj,
+                error: function (data) {
+                    toastr.error('Lưu báo cáo ngày thất bại')
+                },
+                success: function (data) {
+                    if (data.result == "Success") {
+                        DATA = data.data;
+                        var lstDate = [];
+                        $.each(lstDayOfWeek, function (index, value) {
+                            var item = new Object();
+                            console.log(value);
+                            var newArray = data.data.filter(function (el) {
+                                return el.planDate == value.value;
+                            });
+
+                            if (newArray && newArray.length > 0) {
+                                $.each(newArray, function (i, v) {
+                                    v.planDateText = value.name;
+                                    lstDate.push(v);
+                                })
+                            } else {
+                                item = {
+                                    "planId": 0,
+                                    "planDate": value.value,
+                                    "planDateText": value.name,
+                                    "planContent": "",
+                                    "planStatus": ""
+                                }
+                                lstDate.push(item);
+                            }
+                        });
+
+                        const result = lstDate.reduce(function (r, a) {
+                            r[a.planDate] = r[a.planDate] || [];
+                            r[a.planDate].push(a);
+                            return r;
+                        }, Object.create(null));
+
+                        var htmlStr = "";
+                        $.each(result, function (index, value) {
+                            $.each(value, function (i, v) {
+                                htmlStr += `<tr>`;
+                                if (i == 0) {
+                                    if (value.length > 1) {
+                                        htmlStr += `<td class="tac" rowspan="` + value.length + `">` + v.planDate + ` (` + v.planDateText + `)</td>`;
+                                    } else {
+                                        htmlStr += `<td class="tac">` + v.planDate + ` (` + v.planDateText + `)</td>`;
+                                    }
+                                }
+                                htmlStr += `<td>` + (v.kpiName || "") + `</td>`;
+
+                                let planContent = (v.planContent || '');
+                                if (v.planTime > 0) {
+                                    planContent += `(<span class="icon -ap icon-access_time bg-danger"></span>` + v.planTime + `)`;
+                                }
+                                htmlStr += `<td>` + planContent + `</td>`;
+                                htmlStr += `<td>` + (v.approvedContent || '') + `</td>`;
+                                htmlStr += `<td>` + (v.fieldName || '') + `</td>`;
+
+                                let reportContent = (v.reportContent || '');
+                                if (v.reportTime > 0) {
+                                    reportContent += `(<span class="icon -ap icon-access_time bg-success"></span>` + v.reportTime + `)`;
+                                }
+                                htmlStr += `<td>` + reportContent + `</td>`;
+                                let status = "";
+                                let note = "";
+                                switch (v.planStatus) {
+                                    case "1":
+                                        status = 'Đã xong'
+                                        note = "";
+                                        break;
+                                    case "2":
+                                        status = 'Chưa xong'
+                                        note = (v.reportNote || '');
+                                        break;
+                                    case "3":
+                                        status = 'Pending'
+                                        note = (v.reportNote || '');
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                htmlStr += `<td>` + status + `</td>`;
+                                let btnStr = "";
+                                if (v.planId > 0) {
+                                    btnStr = `<a rel="tooltip" title="Cập nhật báo cáo" href="#" onclick="dayReport.show(` + v.planId + `)" class="btn"><span class="icon -ap icon-mode_edit"></span></a>`
+                                    if (v.planStatus != '1') {
+                                        btnStr += `<a rel="tooltip" title="Xóa kế hoạch" href="#" onclick="weekPlan.remove(` + v.planId + `)" class="btn"><span class="icon -ap icon-delete"></span></a>`
+                                    }
+                                    // btnStr += `<a rel="tooltip" title="" href="#" onclick="weekPlan.edit(` + v.planId + `)" class=""><span class="icon -ap icon-mode_edit"></span></a>`;
+                                }
+                                htmlStr += `<td>` + note + `</td>`;
+                                htmlStr += `<td class="tac">` + btnStr + `</td>`;
+                                htmlStr += `</tr>`;
+                            })
+                        })
+                        $('#planWeekTableBody').empty().append(htmlStr);
+                        $('#planWeekTable').bootstrapTable()
+
+                    } else {
+                        toastr.error('Lưu báo cáo ngày thất bại! ' + data.MSG)
+                    }
+                }
+            })
+        }
+    }
+
+    var dayReport = {
+        show: async function (id) {
+            var item = DATA.find(x => x.planId === id);
+            if (item) {
+                dayReport.get(item, item.planId);
+            } else {
+                toastr.error(`Không tìm thấy dữ liệu`);
+            }
+        },
+        get: function (baseObject, planId) {
+            const rt = $.ajax({
+                url: '/api/v1/plan/get-report/' + planId,
+                type: "GET",
+                dataType: 'json',
+                error: function (data) {
+                    toastr.error('Lấy thông báo thất bại')
+                },
+                success: function (data) {
+                    if (data.result == "Success") {
+                        // có  báo cáo thì load lên, ngược lại load thông tin cơ bản
+                        if (data.data && data.data.id > 0) {
+                            FormUtil.setObjectToForm('formDayReport', 'day', data.data);
+                        }
+                        else {
+                            FormUtil.setObjectToForm('formDayReport', 'day', baseObject);
+
+                        }
+                        $('#modalDayReport').modal({ show: true });
+                    } else {
+                        toastr.error('Tải danh sách KPI thất bại')
+                    }
+                }
+            })
+        },
+        save: async function () {
+            try {
+                var obj = new Object();
+                FormUtil.setFormToObject('formDayReport', 'day', obj);
+                if (!obj.reportDate || obj.reportDate.length <= 0) {
+                    toastr.error(`Vui lòng nhập thời gian thực hiện`)
+                    return;
+                }
+                if (!obj.reportContent || obj.reportContent.length <= 0) {
+                    toastr.error(`Vui lòng nhập nội dung báo cáo`)
+                    return;
+                }
+                if (!obj.reportTime || obj.reportTime.length <= 0) {
+                    toastr.error(`Vui lòng nhập thời gian hoàn thành`)
+                    return;
+                }
+
+                if (!obj.reportStatus || obj.reportStatus.length < 0) {
+                    toastr.error(`Vui lòng chọn kết quả`)
+                    return;
+                } else {
+                    if ((obj.reportStatus == '2' || obj.reportStatus == '3') && (!obj.reportReason || obj.reportReason.length <= 0)) {
+                        toastr.error(`Vui lòng nhập lý do`);
+                        return;
+                    }
+
+                }
+
+                $.ajax({
+                    url: '/api/v1/plan/save-day-report',
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    error: function (data) {
+                        toastr.error('Lưu báo cáo ngày thất bại')
+                    },
+                    success: function (data) {
+                        if (data.result == "Success") {
+                            toastr.success('Lưu báo cáo ngày thành công')
+                            $('#modalDayReport').modal('hide');
+                            Search.get();
+                        } else {
+                            toastr.error('Lưu báo cáo ngày thất bại! ' + data.MSG)
+                        }
+                    }
+                })
+            } catch (e) {
+                toastr.error(`Cập nhật thất bại`);
+            }
+        },
+        reset: function () {
+            $('#daytxthoursComplete').val('');
+            $('#daytxtreportContent').val('');
+            $('#daytxtreportDate').val('');
+            $('#daytxtreportReason').val('');
+            $('#daycboreportStatus').val('').trigger('change');
+
+
+        }
+    }
+
+    var weekPlan = {
+        show: function (obj) {
+            weekPlan.loadKpi();
+
+            var objForm = new Object();
+            FormUtil.setFormToObject('searchData', '', objForm);
+            const lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);
+
+            $('#weekcboplanDate').html('');
+            ComboUtil.select2Load('weekcboplanDate', lstDayOfWeek, 'value,value,value');
+            $('#modalWeekPlan').modal({ show: true });
+        },
+
+        loadKpi: async function () {
+            var objParam = new Object();
+            const rt = $.ajax({
+                url: '/api/v1/plan/get-kpi',
+                type: "GET",
+                dataType: 'json',
+                data: objParam,
+                error: function (data) {
+                    toastr.error('Tải danh sách KPI lỗi')
+                },
+                success: function (data) {
+                    if (data.result == "Success") {
+                        ComboUtil.select2Load('weekcbokpiUserId', data.data, 'id,id,name');
+                    } else {
+                        toastr.error('Tải danh sách KPI thất bại')
+                    }
+                }
+            })
+        },
+        save: async function () {
+            try {
+                var obj = new Object();
+                FormUtil.setFormToObject('formWeekPlan', 'week', obj);
+                $.ajax({
+                    url: '/api/v1/plan/save-week',
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    error: function (xhr, err, status) {
+                        toastr.error('Lưu kế hoạch tuần thất bại')
+                    },
+                    success: function (data) {
+                        if (data.result == "Success") {
+                            toastr.success('Lưu kế hoạch tuần thành công')
+                            $('#modalWeekPlan').modal('hide');
+                            Search.get();
+                        } else {
+                            toastr.error('Lưu kế hoạch tuần thất bại! ' + data.MSG)
+                        }
+                    }
+                })
+            } catch (e) {
+                toastr.error(`Cập nhật thất bại`);
+            }
+        },
+        edit: async function (id) {
+            weekPlan.loadKpi();
+            var item = DATA.find(x => x.planId === id);
+            if (item) {
+                debugger;
+
+                FormUtil.setObjectToForm('formWeekPlan', 'week', item);
+                var objForm = new Object();
+
+                FormUtil.setFormToObject('searchData', '', objForm);
+                const lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);
+                $('#weekcboplanDate').html('');
+                ComboUtil.select2Load('weekcboplanDate', lstDayOfWeek, 'value,value,value');
+                $('#modalWeekPlan').modal({ show: true });
+            } else {
+                toastr.error(`Không tìm thấy dữ liệu`);
+            }
+
+
+        },
+        remove: function (id) {
+            if (id > 0) {
+                DlgUtil.showConfirm(`Bạn có chắc chắn xóa`, function (flag) {
+                        if (flag) {
+
+                            $.ajax({
+                                url: '/api/v1/plan/remove/' + id,
+                                type: "POST",
+                                error: function (data) {
+                                    toastr.error('Xóa thất bại')
+                                },
+                                success: function (data) {
+                                    if (data.result == "Success") {
+                                        toastr.success('Xóa thành công')
+                                        Search.get();
+                                    } else {
+                                        toastr.error('Xóa thất bại! ' + data.MSG)
+                                    }
+                                }
+                            });
+                        }
+                    }
+                )
+            }
+        },
+        reset: function () {
+            $('#formWeekPlan').find('input[type="text"]').val('');
+            $('#formWeekPlan').find('textarea[type="text"]').val('');
+            $('#formWeekPlan').find('select').val('').trigger('change');
+        }
+
+    }
+
+    var DateUtil = {
+        calculateDateFromWeekNumAndYear: function (y, w, s) {
+            var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week
+            const firstDate = new Date(y, 0, d);
+            const dateRange = [];
+            var t2 = new Object();
+            t2.value = moment(firstDate, 'DD/MM/YYYY').format("DD/MM/YYYY");
+            t2.name = "Thứ 2";
+            dateRange.push(t2);
+
+            var t3 = new Object();
+            t3.value = moment(firstDate, 'DD/MM/YYYY').add(1, 'days').format("DD/MM/YYYY");
+            t3.name = "Thứ 3";
+            dateRange.push(t3);
+
+            var t4 = new Object();
+            t4.value = moment(firstDate, 'DD/MM/YYYY').add(2, 'days').format("DD/MM/YYYY");
+            t4.name = "Thứ 4";
+            dateRange.push(t4);
+
+            var t5 = new Object();
+            t5.value = moment(firstDate, 'DD/MM/YYYY').add(3, 'days').format("DD/MM/YYYY");
+            t5.name = "Thứ 5";
+            dateRange.push(t5);
+
+            var t6 = new Object();
+            t6.value = moment(firstDate, 'DD/MM/YYYY').add(4, 'days').format("DD/MM/YYYY");
+            t6.name = "Thứ 6";
+            dateRange.push(t6);
+
+            var t7 = new Object();
+            t7.value = moment(firstDate, 'DD/MM/YYYY').add(5, 'days').format("DD/MM/YYYY");
+            t7.name = "Thứ 7";
+            dateRange.push(t7);
+
+            if (s) {
+                var cn = new Object();
+                cn.value = moment(firstDate, 'DD/MM/YYYY').add(6, 'days').format("DD/MM/YYYY");
+                cn.name = "Chủ nhật";
+                dateRange.push(cn);
+            }
+            return dateRange;
+        },
+        conver: function (input) {
+            var arr = input.split('/');
+            return arr[2] + "-" + arr[1] + '-' + arr[0];
+        }
+    }
+
+</script>
+<div th:replace="fragments/footer"></div>
+</body>
+
+</html>

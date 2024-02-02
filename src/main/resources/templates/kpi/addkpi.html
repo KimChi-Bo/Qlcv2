@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JSchool</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+<div class="main-wrapper">
+    <div class="main-title">Thêm KPI</div>
+    <div class="box-form-wrapper">
+        <form id="addkpi" name="addkpi" method="post" th:action="@{/addkpi/add-kpi}" th:object="${AddForm}">
+            <div class="box-form" id="searchData">
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="label-text">Lĩnh vực</div>
+                            </td>
+                            <td>
+                                <select class="form-control selectjs" th:field="*{id_field}">
+                                    <option th:each="item : ${field}"
+                                            th:value="${item.id}"
+                                            th:text="${item.name}">
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td>
+                                <div class="label-text">Kpi</div>
+                            </td>
+                            <td>
+                                <input id="kpi" name="kpi" type="text" th:field="*{content}">
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td>
+                                <div class="label-text">Năm</div>
+                            </td>
+                            <td>
+                                <select id="cboplanYear" class="form-control selectjs" th:field="*{year}"> </select>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td>
+                                <div class="label-text">Tháng</div>
+                            </td>
+                            <td>
+                                <select id="cboplanMonth" class="form-control selectjs" th:field="*{month}"> </select>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td>
+                                <div class="label-text">Sản lượng</div>
+                            </td>
+                            <td>
+                                <input id="weight" name="weight" type="text" th:field="*{weight}">
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+                <div class="actions tright" style="margin-left: -20px;">
+                    <button class="btn btn-main" type="submit">Cập nhật</button>
+                    <button class="btn btn-main" type="button"
+                            onclick="redirectToURL('http://localhost:8001/addkpi/details')">Giao việc cho nhân viên
+                    </button>
+                </div>
+                <div class="divider-gray"></div>
+            </div>
+        </form>
+        <table class="table-result footable-jscus" id="list-container" border="1">
+            <thead>
+            <tr>
+                <th>Lĩnh vực</th>
+                <th>KPI</th>
+                <th>Năm</th>
+                <th>Tháng</th>
+                <th>Sản lượng</th>
+                <th>Ngày tạo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${listKpi}">
+                <td th:text="${titleField.get(item.getId())}"></td>
+                <td th:text="${item.getContent()}"></td>
+                <td th:text="${item.getYear()}"></td>
+                <td th:text="${item.getMonth()}"></td>
+                <td th:text="${item.getWeight()}"></td>
+                <td th:text="${item.getCreateAt()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    function redirectToURL(url) {
+        window.location.href = url;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        initControl();
+        initEvent();
+        Search.get(1, 10);
+    });
+
+    function initControl() {
+        const months = [{"code": "1", "name": "1"}, {"code": "2", "name": "2"}, {
+            "code": "3",
+            "name": "3"
+        }, {"code": "4", "name": "4"}, {"code": "5", "name": "5"}, {"code": "6", "name": "6"}, {
+            "code": "7",
+            "name": "7"
+        }, {"code": "8", "name": "8"}, {"code": "9", "name": "9"}, {"code": "10", "name": "10"}, {
+            "code": "11",
+            "name": "11"
+        }, {"code": "12", "name": "12"}]
+        ComboUtil.select2Load('cboplanMonth', months, 'code,code,name');
+
+        const field = [{"code": "1", "name": "Điện"}]
+        ComboUtil.select2Load('cboplanField', field, 'code,code,name');
+
+        const year = [{"code": "2024", "name": "2024"}, {"code": "2025", "name": "2025"}, {
+            "code": "2026",
+            "name": "2026"
+        }]
+        ComboUtil.select2Load('cboplanYear', year, 'code,code,name');
+
+        $('#weektxtstartDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm:ss',
+        });
+
+        $('#daytxtreportDate').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            language: 'vi'
+        });
+    }
+
+    function createKPI() {
+        $.post({
+            url: $('#addkpi').attr('action'),
+            data: $('#addkpi').serialize(),
+            success: function (response) {
+                $('#list-container').load('/addkpi/list-kpi #list-container');
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+        return false;
+    }
+
+</script>
+
+<!--        <div class="box-form-result">-->
+<!--            <div class="body">-->
+<!--                <div class="table-wrapper">-->
+<!--                    <table class="table-result footable-jscus" id="planWeekTable">-->
+<!--                        <thead>-->
+<!--                        <th class=" wp-5">Ngày </th>-->
+<!--                        <th class="wp-10">KPI</th>-->
+<!--                        <th class="wp-15">Nội dung kế </br> hoạch dự kiến</th>-->
+<!--                        <th class="wp-15">Nội dung kế </br>hoạch phê duyệt</th>-->
+<!--                        <th class="wp-10">Lĩnh vực</th>-->
+<!--                        <th class="wp-10">Nội dung </br>đã thực hiện</th>-->
+<!--                        <th class="wp-10">Kết quả</th>-->
+<!--                        <th class="wp-10">Ghi chú</th>-->
+<!--                        <th class="wp-5">Thao tác</th>-->
+<!--                        </thead>-->
+<!--                        <tbody id="planWeekTableBody">-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--    <div id="modalWeekPlan" class="modal fade popup-box" role="dialog" data-backdrop="static" data-keyboard="false">-->
+<!--        <div class="modal-dialog" style="width: 80%; overflow-y: auto;">-->
+<!--            &lt;!&ndash; Modal content&ndash;&gt;-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-body">-->
+<!--                    <button type="button" class="close -ap icon-close" data-dismiss="modal"></button>-->
+<!--                    <h2 class="popup-title">Cập nhật kế hoạc tuần</h2>-->
+<!--                    <div class="form-group" id="formWeekPlan">-->
+<!--                        <input type="hidden" id="weekhidplanId" value="0">-->
+<!--                        <input type="hidden" id="weekidId" value="0">-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Ngày</div>-->
+<!--                                    <select id="weekcboplanDate" class="form-control selectjs"> </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Chọn KPI</div>-->
+<!--                                    <select id="weekcbokpiUserId" class="form-control selectjs"> </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Nội dung kế hoạch</div>-->
+<!--                                    <textarea id="weektxtplanContent" type="text" autocomplete="off"-->
+<!--                                              class="form-control" placeholder="Nội dung kế hoạch"></textarea>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Thời gian bắt đầu</div>-->
+<!--                                    <input id="weektxtstartDate" type="text" autocomplete="off" class="form-control"-->
+<!--                                           placeholder="Thời gian bắt đầu">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Số giờ hoàn thành</div>-->
+<!--                                    <input id="weektxtplanTime" type="text" autocomplete="off" class="form-control"-->
+<!--                                           placeholder="Số giờ hoàn thành">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="divider-gray"></div>-->
+<!--                    <div class="actions center">-->
+<!--                        <button type="button" class="btn btn-main" onclick="weekPlan.save()">Cập nhật</button>-->
+<!--                        <button type="button" class="btn btn-second" data-dismiss="modal">Hủy bỏ</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div id="modalDayReport" class="modal fade popup-box" role="dialog" data-backdrop="static"-->
+<!--         data-keyboard="false">-->
+<!--        <div class="modal-dialog" style="width: 80%; overflow-y: auto;">-->
+<!--            &lt;!&ndash; Modal content&ndash;&gt;-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-body">-->
+<!--                    <button type="button" class="close -ap icon-close" data-dismiss="modal"></button>-->
+<!--                    <h2 class="popup-title">Cập nhật báo cáo cuối ngày</h2>-->
+<!--                    <div class="form-group" id="formDayReport">-->
+<!--                        <input type="hidden" id="dayhidplanId" value="0">-->
+<!--                        <input type="hidden" id="dayhidid" value="0">-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Ngày<span class="input-required">*</span></div>-->
+<!--                                    <input id="daytxtreportDate" type="text" autocomplete="off" class="form-control"-->
+<!--                                           placeholder="Ngày">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Nội dung báo cáo<span class="input-required">*</span>-->
+<!--                                    </div>-->
+<!--                                    <textarea id="daytxtreportContent" type="text" autocomplete="off"-->
+<!--                                              class="form-control" placeholder="Nội dung kế hoạch"></textarea>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-xs-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <div class="label-text">Số giờ hoàn thành<span class="input-required">*</span>-->
+<!--                                    </div>-->
+<!--                                    <input id="daytxthoursComplete" type="text" autocomplete="off"-->
+<!--                                           class="form-control" placeholder="Số giờ hoàn thành">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="divider-gray"></div>-->
+<!--                    <div class="actions center">-->
+<!--                        <button type="button" class="btn btn-main" onclick="dayReport.save()">Cập-->
+<!--                            nhật</button>-->
+<!--                        <button type="button" class="btn btn-second" data-dismiss="modal">Hủy bỏ</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+// function initEvnet() {
+// $("#modalWeekPlan").on("hidden.bs.modal", function () {
+// weekPlan.reset();
+// });
+// $("#modalDayReport").on("hidden.bs.modal", function () {
+// dayReport.reset();
+// });
+// }
+
+<!--    var DATA = [];-->
+<!--    var Search = {-->
+<!--        colums: function () {-->
+<!--            return columns = [{ field: '', checkbox: true, align: 'center', valign: 'middle', class: "hidden" },-->
+<!--                // {field: 'STT', title: 'STT', sortable: false, class: "", escape: true , class: "hidden" },-->
+<!--                { field: 'planDate', width: "10%", title: 'Ngày', sortable: false, class: "", escape: true },-->
+<!--                { field: 'planKpi', width: "10%", title: 'Kpi', sortable: false, class: "", escape: true },-->
+<!--                { field: 'planContent', width: "50%", title: 'Kế hoạch', sortable: false, class: "", valign: 'left', escape: true },-->
+<!--                { field: 'planReport', width: "10%", title: 'Báo cáo', sortable: false, class: "", align: 'center', escape: true, formatter: Search.columReport },-->
+<!--                { field: 'planStatus', width: "10%", title: 'Trạng thái', sortable: false, class: "", escape: true, formatter: Search.colStatus },-->
+<!--                { field: 'operate', width: "10%", title: 'Thao tác', sortable: false, align: 'center', events: window.operateEvents, formatter: Search.columDel },-->
+<!--            ];-->
+<!--        },-->
+<!--        params: function (p) {-->
+<!--            var objParam = new Object();-->
+<!--            var objForm = new Object();-->
+<!--            FormUtil.setFormToObject('searchData', '', objForm);-->
+
+<!--            objParam.p_obj = JSON.stringify(objForm);-->
+<!--            var encodedString = Base64.encode(JSON.stringify(objParam));-->
+
+
+<!--            objForm.limit = p.limit;-->
+<!--            objForm.offset = p.offset;-->
+<!--            return objForm;-->
+<!--        },-->
+<!--        columDel: function (value, row, index) {-->
+<!--            var _viewdHoso = `<a rel="tooltip" title="" href="#" onclick="dayReport.remove(` + row.planId + `)" class=""><span class="icon -ap icon-delete"></span></a>`;
+-- >
+<!--            return [_viewdHoso].join('');-->
+
+<!--        },-->
+<!--        colStatus: function (value, row, index) {-->
+<!--            if (row.planStatus == "1") {-->
+<!--                return 'Duyệt'-->
+<!--            } else {-->
+<!--                return "Chưa duyệt";-->
+<!--            }-->
+<!--        },-->
+<!--        columReport: function (value, row, index) {-->
+<!--            var _viewdHoso = `<a rel="tooltip" title="" href="#" onclick="dayReport.show(` + row.planId + `)" class=""><span class="icon -ap icon-mode_edit"></span></a>`;
+-- >
+<!--            return [_viewdHoso].join('');-->
+
+<!--        },-->
+
+<!--        getTable: function (page, size) {-->
+<!--            $('#planWeekTable').bootstrapTable('destroy').bootstrapTable({-->
+<!--                idField: "ID",-->
+<!--                columns: Search.colums(),-->
+<!--                url: '/api/v1/plan/get-paging',-->
+<!--                pageSize: '1',-->
+<!--                queryParams: 'Search.params',-->
+<!--                undefinedText: '',-->
+<!--                pagination: true,-->
+<!--                sidePagination: 'server',-->
+<!--                clickToSelect: true,-->
+<!--                singleSelect: false-->
+<!--            })-->
+<!--        },-->
+
+<!--        get: function () {-->
+<!--            // planWeekTableBody-->
+<!--            var objForm = new Object();-->
+<!--            FormUtil.setFormToObject('searchData', '', objForm);-->
+<!--            var lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);-->
+<!--            var obj = {-->
+<!--                "startDate": DateUtil.conver(lstDayOfWeek[0].value),-->
+<!--                "endDate": DateUtil.conver(lstDayOfWeek[5].value)-->
+<!--            }-->
+<!--            $.ajax({-->
+<!--                url: '/api/v1/plan/get-all',-->
+<!--                type: "GET",-->
+<!--                dataType: 'json',-->
+<!--                contentType: 'application/json',-->
+<!--                data: obj,-->
+<!--                error: function (data) {-->
+<!--                    toastr.error('Lưu báo cáo ngày thất bại')-->
+<!--                },-->
+<!--                success: function (data) {-->
+<!--                    if (data.result == "Success") {-->
+<!--                        DATA = data.data;-->
+<!--                        var lstDate = [];-->
+<!--                        $.each(lstDayOfWeek, function (index, value) {-->
+<!--                            var item = new Object();-->
+<!--                            console.log(value);-->
+<!--                            var newArray = data.data.filter(function (el) {-->
+<!--                                return el.planDate == value.value;-->
+<!--                            });-->
+
+<!--                            console.log(`newArray`, newArray);-->
+<!--                            console.log(`data.data.`, data.data);-->
+
+<!--                            if (newArray && newArray.length > 0) {-->
+<!--                                $.each(newArray, function (i, v) {-->
+<!--                                    v.planDateText = value.name;-->
+<!--                                    lstDate.push(v);-->
+<!--                                })-->
+<!--                            } else {-->
+<!--                                item = {-->
+<!--                                    "planId": 0,-->
+<!--                                    "planDate": value.value,-->
+<!--                                    "planDateText": value.name,-->
+<!--                                    "planContent": "",-->
+<!--                                    "planReport": null,-->
+<!--                                    "planStatus": ""-->
+<!--                                }-->
+<!--                                lstDate.push(item);-->
+<!--                            }-->
+<!--                        });-->
+
+<!--                        const result = lstDate.reduce(function (r, a) {-->
+<!--                            r[a.planDate] = r[a.planDate] || [];-->
+<!--                            r[a.planDate].push(a);-->
+<!--                            return r;-->
+<!--                        }, Object.create(null));-->
+
+<!--                        var htmlStr = "";-->
+<!--                        $.each(result, function (index, value) {-->
+<!--                            $.each(value, function (i, v) {-->
+<!--                                htmlStr += `<tr>`;-->
+<!--                                if (i == 0) {-->
+<!--                                    if (value.length > 1) {-->
+<!--                                        htmlStr += `<td rowspan="` + value.length + `">` + v.planDate + ` (` + v.planDateText + `)</td>`;
+-- >
+<!--                                    } else {-->
+<!--                                        htmlStr += `<td>` + v.planDate + ` (` + v.planDateText + `)</td>`;
+-- >
+<!--                                    }-->
+<!--                                }-->
+<!--                                htmlStr += `<td class="wp-10">` + (v.kpi || "") + `</td>`;
+-- >
+< !--htmlStr += `<td class="wp-10">` + (v.planContent || '') + `</td>`;
+-- >
+< !--htmlStr += `<td>` + (v.approvedContent || '') + `</td>`;
+-- >
+< !--htmlStr += `<td>` + (v.fieldName || '') + `</td>`;
+-- >
+< !--htmlStr += `<td>` + (v.reportContent || '') + `</td>`;
+-- >
+<!--                                let status = "";-->
+<!--                                let note = "";-->
+<!--                                switch (v.planStatus) {-->
+<!--                                    case "1":-->
+<!--                                        status = 'Đã xong'-->
+<!--                                        note = "";-->
+<!--                                        break;-->
+<!--                                    case "2":-->
+<!--                                        status = 'Chưa xong'-->
+<!--                                        note = (v.planNote || '');-->
+<!--                                        break;-->
+<!--                                    case "3":-->
+<!--                                        status = 'Pending'-->
+<!--                                        note = (v.planNote || '');-->
+<!--                                        break;-->
+<!--                                    default:-->
+<!--                                        break;-->
+<!--                                }-->
+<!--                                htmlStr += `<td>` + status + `</td>`;
+-- >
+<!--                                let btnStr = "";-->
+<!--                                if (v.planId > 0) {-->
+<!--                                    btnStr = `<a rel="tooltip" title="Cập nhật báo cáo" href="#" onclick="dayReport.show(` + v.planId + `)" class="btn"><span class="icon -ap icon-mode_edit"></span></a>`-- >
+<!--                                    if (v.planStatus != '1') {-->
+<!--                                        btnStr += `<a rel="tooltip" title="Xóa kế hoạch" href="#" onclick="weekPlan.remove(` + v.planId + `)" class="btn"><span class="icon -ap icon-delete"></span></a>`-- >
+<!--                                    }-->
+<!--                                    // btnStr += `<a rel="tooltip" title="" href="#" onclick="weekPlan.edit(` + v.planId + `)" class=""><span class="icon -ap icon-mode_edit"></span></a>`;-->
+<!--                                }-->
+<!--                                htmlStr += `<td >` + note + `</td>`;
+-- >
+< !--htmlStr += `<td >` + btnStr + `</td>`;
+-- >
+< !--htmlStr += `</tr>`;
+-- >
+<!--                            })-->
+<!--                        })-->
+<!--                        $('#planWeekTableBody').empty().append(htmlStr);-->
+<!--                        $('#planWeekTable').bootstrapTable()-->
+
+<!--                    } else {-->
+<!--                        toastr.error('Lưu báo cáo ngày thất bại! ' + data.MSG)-->
+<!--                    }-->
+<!--                }-->
+<!--            })-->
+<!--        }-->
+<!--    }-->
+
+<!--    var dayReport = {-->
+<!--        show: async function (id) {-->
+<!--            var item = DATA.find(x => x.planId === id);-->
+<!--            if (item) {-->
+<!--                dayReport.get(item, item.planId);-->
+<!--            } else {-->
+<!--                toastr.error(`Không tìm thấy dữ liệu`);-->
+<!--            }-->
+<!--        },-->
+<!--        get: function (baseObject, planId) {-->
+<!--            const rt = $.ajax({-->
+<!--                url: '/api/v1/plan/get-report/' + planId,-->
+<!--                type: "GET",-->
+<!--                dataType: 'json',-->
+<!--                error: function (data) {-->
+<!--                    toastr.error('Lấy thông báo thất bại')-->
+<!--                },-->
+<!--                success: function (data) {-->
+<!--                    if (data.result == "Success") {-->
+<!--                        // có  báo cáo thì load lên, ngược lại load thông tin cơ bản-->
+<!--                        if (data.data && data.data.id > 0) {-->
+<!--                            FormUtil.setObjectToForm('formDayReport', 'day', data.data);-->
+<!--                        }-->
+<!--                        else {-->
+<!--                            FormUtil.setObjectToForm('formDayReport', 'day', baseObject);-->
+
+<!--                        }-->
+<!--                        $('#modalDayReport').modal({ show: true });-->
+<!--                    } else {-->
+<!--                        toastr.error('Tải danh sách KPI thất bại')-->
+<!--                    }-->
+<!--                }-->
+<!--            })-->
+<!--        },-->
+<!--        save: async function () {-->
+<!--            try {-->
+<!--                var obj = new Object();-->
+<!--                FormUtil.setFormToObject('formDayReport', 'day', obj);-->
+<!--                if (!obj.reportDate || obj.reportDate < 0) {-->
+<!--                    toastr.error(`Vui lòng nhập thời gian thực hiện`)-->
+<!--                    return;-->
+<!--                }-->
+<!--                if (!obj.reportContent || obj.reportContent < 0) {-->
+<!--                    toastr.error(`Vui lòng nhập nội dung báo cáo`)-->
+<!--                    return;-->
+<!--                }-->
+<!--                if (!obj.hoursComplete || obj.hoursComplete < 0) {-->
+<!--                    toastr.error(`Vui lòng nhập thời gian hoàn thành`)-->
+<!--                    return;-->
+<!--                }-->
+<!--                $.ajax({-->
+<!--                    url: '/api/v1/plan/save-day-report',-->
+<!--                    type: "POST",-->
+<!--                    dataType: 'json',-->
+<!--                    contentType: 'application/json',-->
+<!--                    data: JSON.stringify(obj),-->
+<!--                    error: function (data) {-->
+<!--                        toastr.error('Lưu báo cáo ngày thất bại')-->
+<!--                    },-->
+<!--                    success: function (data) {-->
+<!--                        if (data.result == "Success") {-->
+<!--                            toastr.success('Lưu báo cáo ngày thành công')-->
+<!--                            $('#modalDayReport').modal('hide');-->
+<!--                            Search.get();-->
+<!--                        } else {-->
+<!--                            toastr.error('Lưu báo cáo ngày thất bại! ' + data.MSG)-->
+<!--                        }-->
+<!--                    }-->
+<!--                })-->
+<!--            } catch (e) {-->
+<!--                toastr.error(`Cập nhật thất bại`);-->
+<!--            }-->
+<!--        },-->
+<!--        reset : function() {-->
+<!--            $('#daytxthoursComplete').val('');-->
+<!--            $('#daytxtreportContent').val('');-->
+<!--            $('#daytxtreportDate').val('');-->
+<!--        }-->
+<!--    }-->
+
+<!--    var weekPlan = {-->
+<!--        show: function (obj) {-->
+<!--            weekPlan.loadKpi();-->
+
+<!--            var objForm = new Object();-->
+<!--            FormUtil.setFormToObject('searchData', '', objForm);-->
+<!--            const lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);-->
+
+<!--            $('#weekcboplanDate').html('');-->
+<!--            ComboUtil.select2Load('weekcboplanDate', lstDayOfWeek, 'value,value,value');-->
+<!--            $('#modalWeekPlan').modal({ show: true });-->
+<!--        },-->
+
+<!--        loadKpi: async function () {-->
+<!--            var objParam = new Object();-->
+<!--            const rt = $.ajax({-->
+<!--                url: '/api/v1/plan/get-kpi',-->
+<!--                type: "GET",-->
+<!--                dataType: 'json',-->
+<!--                data: objParam,-->
+<!--                error: function (data) {-->
+<!--                    toastr.error('Tải danh sách KPI lỗi')-->
+<!--                },-->
+<!--                success: function (data) {-->
+<!--                    if (data.result == "Success") {-->
+<!--                        ComboUtil.select2Load('weekcbokpiUserId', data.data, 'id,id,name');-->
+<!--                    } else {-->
+<!--                        toastr.error('Tải danh sách KPI thất bại')-->
+<!--                    }-->
+<!--                }-->
+<!--            })-->
+<!--        },-->
+<!--        save: async function () {-->
+<!--            try {-->
+<!--                var obj = new Object();-->
+<!--                FormUtil.setFormToObject('formWeekPlan', 'week', obj);-->
+<!--                $.ajax({-->
+<!--                    url: '/api/v1/plan/save-week',-->
+<!--                    type: "POST",-->
+<!--                    dataType: 'json',-->
+<!--                    contentType: 'application/json',-->
+<!--                    data: JSON.stringify(obj),-->
+<!--                    error: function (xhr, err, status) {-->
+<!--                        toastr.error('Lưu kế hoạch tuần thất bại')-->
+<!--                    },-->
+<!--                    success: function (data) {-->
+<!--                        if (data.result == "Success") {-->
+<!--                            toastr.success('Lưu kế hoạch tuần thành công')-->
+<!--                            $('#modalWeekPlan').modal('hide');-->
+<!--                            Search.get();-->
+<!--                        } else {-->
+<!--                            toastr.error('Lưu kế hoạch tuần thất bại! ' + data.MSG)-->
+<!--                        }-->
+<!--                    }-->
+<!--                })-->
+<!--            } catch (e) {-->
+<!--                toastr.error(`Cập nhật thất bại`);-->
+<!--            }-->
+<!--        },-->
+<!--        edit: async function (id) {-->
+<!--            weekPlan.loadKpi();-->
+<!--            var item = DATA.find(x => x.planId === id);-->
+<!--            if (item) {-->
+<!--                debugger;-->
+
+<!--                FormUtil.setObjectToForm('formWeekPlan', 'week', item);-->
+<!--                var objForm = new Object();-->
+
+<!--                FormUtil.setFormToObject('searchData', '', objForm);-->
+<!--                const lstDayOfWeek = DateUtil.calculateDateFromWeekNumAndYear(objForm.planYear, objForm.planWeek);-->
+<!--                $('#weekcboplanDate').html('');-->
+<!--                ComboUtil.select2Load('weekcboplanDate', lstDayOfWeek, 'value,value,value');-->
+<!--                $('#modalWeekPlan').modal({ show: true });-->
+<!--            } else {-->
+<!--                toastr.error(`Không tìm thấy dữ liệu`);-->
+<!--            }-->
+
+
+<!--        },-->
+<!--        remove: function (id) {-->
+<!--            if (id > 0) {-->
+<!--                DlgUtil.showConfirm(`Bạn có chắc chắn xóa`, function (flag) {-->
+<!--                        if (flag) {-->
+
+<!--                            $.ajax({-->
+<!--                                url: '/api/v1/plan/remove/' + id,-->
+<!--                                type: "POST",-->
+<!--                                error: function (data) {-->
+<!--                                    toastr.error('Lưu báo cáo ngày thất bại')-->
+<!--                                },-->
+<!--                                success: function (data) {-->
+<!--                                    if (data.result == "Success") {-->
+<!--                                        toastr.success('Lưu báo cáo ngày thành công')-->
+<!--                                        Search.get();-->
+<!--                                    } else {-->
+<!--                                        toastr.error('Lưu báo cáo ngày thất bại! ' + data.MSG)-->
+<!--                                    }-->
+<!--                                }-->
+<!--                            });-->
+<!--                        }-->
+<!--                        else {-->
+<!--                            toastr.error(`Chưa cập nhật`);-->
+<!--                        }-->
+<!--                    }-->
+<!--                )-->
+<!--            }-->
+<!--        },-->
+<!--        reset : function() {-->
+<!--            $('#formWeekPlan').find('input[type="text"]').val('');-->
+<!--            $('#formWeekPlan').find('textarea[type="text"]').val('');-->
+<!--            $('#formWeekPlan').find('select').val('').trigger('change');-->
+<!--        }-->
+
+<!--    }-->
+
+<!--    var DateUtil = {-->
+<!--        calculateDateFromWeekNumAndYear: function (y, w) {-->
+<!--            var d = (1 + (w - 1) * 7); // 1st of January + 7 days for each week-->
+<!--            const firstDate = new Date(y, 0, d);-->
+<!--            const dateRange = [];-->
+<!--            var t2 = new Object();-->
+<!--            t2.value = moment(firstDate, 'DD/MM/YYYY').format("DD/MM/YYYY");-->
+<!--            t2.name = "Thứ 2";-->
+<!--            dateRange.push(t2);-->
+
+<!--            var t3 = new Object();-->
+<!--            t3.value = moment(firstDate, 'DD/MM/YYYY').add(1, 'days').format("DD/MM/YYYY");-->
+<!--            t3.name = "Thứ 3";-->
+<!--            dateRange.push(t3);-->
+
+<!--            var t4 = new Object();-->
+<!--            t4.value = moment(firstDate, 'DD/MM/YYYY').add(2, 'days').format("DD/MM/YYYY");-->
+<!--            t4.name = "Thứ 4";-->
+<!--            dateRange.push(t4);-->
+
+<!--            var t5 = new Object();-->
+<!--            t5.value = moment(firstDate, 'DD/MM/YYYY').add(3, 'days').format("DD/MM/YYYY");-->
+<!--            t5.name = "Thứ 5";-->
+<!--            dateRange.push(t5);-->
+
+<!--            var t6 = new Object();-->
+<!--            t6.value = moment(firstDate, 'DD/MM/YYYY').add(4, 'days').format("DD/MM/YYYY");-->
+<!--            t6.name = "Thứ 6";-->
+<!--            dateRange.push(t6);-->
+
+<!--            var t7 = new Object();-->
+<!--            t7.value = moment(firstDate, 'DD/MM/YYYY').add(5, 'days').format("DD/MM/YYYY");-->
+<!--            t7.name = "Thứ 7";-->
+<!--            dateRange.push(t7);-->
+<!--            return dateRange;-->
+<!--        },-->
+<!--        conver: function (input) {-->
+<!--            var arr = input.split('/');-->
+<!--            return arr[2] + "-" + arr[1] + '-' + arr[0];-->
+<!--        }-->
+// <!--    }-->
+
+<div th:replace="fragments/footer"></div>
+</body>
+
+</html>

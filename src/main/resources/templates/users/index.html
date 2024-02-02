@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en" layout:decorate="~{layouts/index}">
+<script th:src="@{/js/user.js}"></script>
+
+<body>
+    <div layout:fragment="content">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kế hoạch tuần</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width:5%">STT</th>
+                                        <th>Ngày</th>
+                                        <th>Kế hoạch</th>
+                                        <th>Báo cáo</th>
+                                        <th style="width: 10%">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>20/11/2020</td>
+                                        <td>
+                                            Kế hoạch
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-default" data-toggle="modal"
+                                                data-target="#modal-lg">
+                                                Launch Large Modal
+                                            </button>
+                                        </td>
+                                        <td>
+                                            Phê duyệt
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2.</td>
+                                        <td>20/11/2020</td>
+                                        <td>
+                                            Kế hoạch
+                                        </td>
+                                        <td>
+                                            Báo cáo
+                                        </td>
+                                        <td>
+                                            Phê duyệt
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3.</td>
+                                        <td>20/11/2020</td>
+                                        <td>
+                                            Kế hoạch
+                                        </td>
+                                        <td>
+                                            Báo cáo
+                                        </td>
+                                        <td>
+                                            Phê duyệt
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4.</td>
+                                        <td>20/11/2020</td>
+                                        <td>
+                                            Kế hoạch
+                                        </td>
+                                        <td>
+                                            Báo cáo
+                                        </td>
+                                        <td>
+                                            Phê duyệt
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer clearfix">
+                            <ul class="pagination pagination-sm m-0 float-right">
+                                <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal-lg">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cập nhật báo cáo cuối ngày</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Date:</label>
+                                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input"
+                                            data-target="#reservationdate">
+                                        <div class="input-group-append" data-target="#reservationdate"
+                                            data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Nội dung báo cáo</label>
+                                    <textarea type="text" class="form-control" id="exampleInputPassword1"
+                                        placeholder=""></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputFile">Số giờ hành chính</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="exampleInputFile">
+                                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Upload</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+        <script type="text/javascript">
+            $('#reservationdate').datetimepicker({
+                format: 'L'
+            });
+            function greetWorld() {
+                alert("hello world")
+            }
+        </script>
+    </div>
+</body>
+
+</html>

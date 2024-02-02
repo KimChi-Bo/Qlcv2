@@ -1,0 +1,195 @@
+<!-- <head th:fragment="head">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta content="ie=edge" http-equiv="x-ua-compatible" />
+    <title th:text="${metaTitle} ? ${metaTitle} : 'default title'"></title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head> -->
+
+<head th:fragment="head">
+    <title th:text="${metaTitle} ? ${metaTitle} : 'QLCV '"></title>
+    <meta charset="utf-8" />
+    <link href="https://plus.google.com/107177373712004256296" rel="author">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    </meta>
+    <meta content="width=device-width, initial-scale=1" name="viewport" id="viewport">
+    </meta>
+    <meta content="" name="description">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    </meta>
+    <meta content="width=device-width, initial-scale=1" name="viewport" id="viewport">
+    </meta>
+    <meta content="index, follow" name="ROBOTS">
+
+    <!-- Anmiate css -->
+    <!-- End  Anmiate css -->
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="@{/style/vendor/nucleo/outline/css/style.css}">
+    <link type="text/css" rel='stylesheet' href="@{/style/vendor/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="@{/style/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css}">
+    <link rel="stylesheet" href="@{/style/vendor/slick/slick.css}">
+    <link rel="stylesheet" href="@{/style/vendor/ap8/css/style.css}">
+    <!-- End Bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="@{/style/vendor/select2/css/select2.min.css}">
+    <!-- Fontawesome css -->
+    <link type="text/css" rel='stylesheet' href="@{/style/vendor/font-awesome/css/font-awesome.min.css}">
+    <!-- End Fontawesome css -->
+
+    <!-- Font Icon Ap css -->
+    <link rel="stylesheet" type="text/css" href="@{/style/css/style.css}">
+</head>
+
+<body class="minimize-menu">
+    <div class="sidebar-menu">
+
+        <div class="navbar mscrollable">
+            <div class="menus">
+                <div class="item active">
+                    <a href="#" class="url ">
+                        <span class="icon nc-icon-outline ui-1_settings-gear-64"></span>
+                        <span class="text">
+                            Trang chủ
+                        </span>
+
+                    </a>
+
+                </div>
+                <div class="item">
+                    <a href="#" class="url">
+                        <span class="icon nc-icon-outline files_single-copy-04"></span>
+                        <span class="text">
+                            Tiếp nhận và trả kết quả
+                        </span>
+                        <div class="down -ap  icon-chevron-right22">
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class=""><a href="#"> Đơn vị tính</a></li>
+                        <li><a href="#"> Bệnh nhân</a></li>
+                        <li><a href="#"> Hàm lượng thuốc</a></li>
+                        <li><a href="#"> Loại thuốc</a></li>
+                        <li><a href="#"> Tên thuốc</a></li>
+                        <li><a href="#"> Bệnh lý</a></li>
+                    </ul>
+
+                </div>
+                <div class="item">
+                    <a href="#" class="url">
+                        <span class="icon nc-icon-outline files_folder-info"></span>
+                        <span class="text">
+                            Xử lý hồ sơ
+                        </span>
+                        <div class="down -ap  icon-chevron-right22">
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class=""><a href="#"> Đơn vị tính</a></li>
+                        <li><a href="#"> Bệnh nhân</a></li>
+                        <li><a href="#"> Hàm lượng thuốc</a></li>
+                        <li><a href="#"> Loại thuốc</a></li>
+                        <li><a href="#"> Tên thuốc</a></li>
+                        <li><a href="#"> Bệnh lý</a></li>
+                    </ul>
+                </div>
+                <div class="item">
+                    <a href="#" class="url">
+                        <span class="icon nc-icon-outline ui-1_edit-75"></span>
+                        <span class="text">
+                            Giấy chuyển hộ khẩu
+                        </span>
+                        <div class="down -ap  icon-chevron-right22">
+                        </div>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li class=""><a href="#"> Đơn vị tính</a></li>
+                        <li><a href="#"> Bệnh nhân</a></li>
+                        <li><a href="#"> Hàm lượng thuốc</a></li>
+                        <li><a href="#"> Loại thuốc</a></li>
+                        <li><a href="#"> Tên thuốc</a></li>
+                        <li><a href="#"> Bệnh lý</a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="header">
+        <div class="nav-icon">
+            <span class="-ap icon-list2"></span>
+        </div>
+        <div class="top">
+
+            <a class="logo">
+                <img src="../../img/logo.png" alt="Logo">
+            </a>
+            <div class="text-logo">
+                <div class="subtitle">CƠ SỞ DỮ LIỆU QUỐC GIA VỀ DÂN CƯ</div>
+            </div>
+        </div>
+        <div class="header-right pull-right">
+            <!-- <div class="item -noti">
+                <div class="notify">
+                    <span class="icon -ap icon-notifications_none"></span>
+                    <span class="status"></span>
+                </div>
+            </div> -->
+            <div class="item -noti -waiting">
+                <div class="notify ">
+                    <span class="icon -ap icon-notifications "></span>
+                    <div class="num">
+                        1
+                    </div>
+                </div>
+
+            </div>
+            <div class="item -user">
+                <div class="user">
+                    <div class="avatar"
+                        style="background-image: url(https://cdn.pixabay.com/photo/2016/08/20/05/38/avatar-1606916_960_720.png);">
+
+                    </div>
+                    <div class="username">
+                        <p class="name">Nguyen Thu Trang</p>
+                    </div>
+                    <div class="down">
+                        <span class="icon -ap icon-triangle-down"></span>
+                    </div>
+
+                </div>
+                <ul class="dropdown-menu">
+                    <li class="username">
+
+                        Uoc Nguyen
+
+                    </li>
+                    <li><a href="#"><span class="fa fa-edit icon"></span> Đổi mật khẩu</a></li>
+                    <li><a href="#"><span class="fa fa-sign-out icon"></span> Thoát</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="main-content mscrollable">
+    </div>
+    <script type="text/javascript" src="@{/style/vendor/jquery/jquery.2.1.1.min.js}"></script>
+    <script type="text/javascript" src="@{/style/vendor/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="@{/style/vendor/select2/js/select2.min.js}"></script>
+    <script type="text/javascript" src="@{/style/js/custom.js}"></script>
+
+    <script src="@{/style/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js}"></script>
+    <script src="@{/style/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.vi.min.js}"></script>
+
+    <script type="text/javascript">
+        $(".selectjs").select2();
+
+        $('.datepickerjs').datepicker({
+            startDate: '-3d',
+            language: 'vi',
+        });
+
+    </script>
+</body>

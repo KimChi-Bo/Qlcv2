@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>VNPT quản lý công việc</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+<div class="main-wrapper">
+    <div class="main-title">Thêm Lĩnh vực</div>
+    <span id="errMessage" name="errMessage" style="color:red;" th:text="${errMessage}"></span>
+    <div class="box-form-wrapper">
+        <form id="AddGroupForm" name="AddGroupForm" method="post" th:action="@{/}" th:object="${AddGroupForm}">
+            <div class="box-form" >
+                <div class="row">
+                    <div class="col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <div class="label-text">Tên nhóm</div>
+                            <input class="form-control selectjs" id="name" name="name" type="text" th:field = "*{name}">
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <div class="label-text">Tên trung tâm</div>
+                            <input class="form-control selectjs" id="center" name="center" type="text" th:field = "*{centerName}">
+                        </div>
+                    </div>
+                </div>
+                <div class="actions tright">
+                    <input class="btn btn-main" type="button" onclick="add()" value="ADD">
+                </div>
+                <div class="divider-gray"></div>
+            </div>
+        </form>
+        <div class="box-form-result">
+            <div class="body">
+                <div class="table-wrapper">
+                    <table class="table-result footable-jscus" id="planWeekTable">
+                        <tr>
+                            <th>Mã</th>
+                            <th>Nhóm</th>
+                            <th>Trung tâm</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        <tr th:each="group : ${groupList}">
+                            <td th:utext="${group.getId()}"></td>
+                            <td th:utext="${group.getName()}"></td>
+                            <td th:utext="${group.getCenterName()}"></td>
+                            <td class="wp-10"><a th:href="@{/addgroup/} + ${group.getId()}"><span class="icon -ap icon-delete"></span></a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/jquery-3.4.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.ja.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootbox.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/base.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+
+    var Globals = {
+        contextroot : /*[[@{/}]]*/''
+    }
+    function add() {
+        $('#AddGroupForm').attr('action', Globals.contextroot + 'addgroup/add');
+        $('#AddGroupForm').submit();
+        return false;
+    }
+    function remove() {
+        $('#AddGroupForm').attr('action', Globals.contextroot + 'addgroup/add');
+        $('#AddGroupForm').submit();
+        return false;
+    }
+
+</script>
+<div th:replace="fragments/footer"></div>
+</body>
+
+</html>

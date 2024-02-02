@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>VNPT quản lý công việc</title>
+</head>
+<body>
+<div id ="khung">
+<span id="errMessage" name="errMessage" style="color:red;" th:text="${errMessage}"></span>
+<form id="VP001Form" name="VP001Form" method="post" th:action="@{/}" th:object="${VP001Form}">
+    <div style="text-align: center;">
+        <a> <img src="https://vnpt.com.vn/design/images/logo-vnpt.jpg?w=130" alt=""> </a>
+        <div>
+            <b>Hệ thống quản lý công việc </b>
+        </div>
+        <div>
+            <b>VNPT Thái Bình</b>
+        </div><br/>
+    </div>
+    <div style="padding-left: 10px;padding-top: 50px;width: 100%; display: flex;">
+        <label style="width: 40%">Tên đăng nhập</label>
+        <input style="width: 60%" id="userName" name="userName" type="text" th:field = "*{userName}">
+    </div><br/>
+    <div style="padding-left: 10px;width: 100%; display: flex;">
+        <label style="width: 40%"> Mật khẩu </label>
+        <input style="width: 60%" id="password" type="password" th:field = "*{pass}">
+    </div><br/>
+    <div style="text-align: center;">
+        <input type="button" onclick="login()" value="Đăng Nhập" >
+    </div>
+</form>
+</div>
+<style>
+    #khung{
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+    #VP001Form{
+        max-width: 300px;
+        background: #f5f5f5;
+        flex-grow: 1;
+        padding: 70px;
+
+    }
+</style>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/jquery-3.4.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.ja.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootbox.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/base.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+var Globals = {
+	contextroot : /*[[@{/}]]*/''
+}
+
+    function login() {
+        $('#VP001Form').attr('action', Globals.contextroot + 'login/check');
+        $('#VP001Form').submit();
+        return false;
+    }
+</script>
+</body>
+</html>

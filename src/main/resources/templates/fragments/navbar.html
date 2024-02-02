@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">JSchool</title>
+    <link rel="stylesheet" th:href="@{/style/vendor/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/vendor/ap8/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/vendor/metisMenu/metisMenu.min.css}">
+    <link rel="stylesheet" th:href="@{/style/vendor/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/vendor/slick/slick.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/vendor/footable-bootstrap/css/footable.bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/style/vendor/alertify/themes/alertify.core.css}" />
+    <link rel="stylesheet" th:href="@{/style/vendor/alertify/themes/alertify.default.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+        integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link type="text/css" rel='stylesheet'
+        th:href="@{/style/vendor/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css}">
+    <link type="text/css" rel='stylesheet' th:href="@{/style/vendor/bootstrapValidator/bootstrapValidator.min.css}">
+
+    <link rel="stylesheet" th:href="@{/style/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/vendor/select2/css/select2.min.css}">
+    <script type="text/javascript" th:src="@{/style/vendor/jquery/jquery.2.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/style/vendor/jquery/moment.min.js}"></script>
+    <script type="text/javascript" th:src="@{/style/vendor/bootstrap/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/style/vendor/slick/slick.min.js}"></script>
+    <script type="text/javascript" th:src="@{/style/vendor/metisMenu/metisMenu.min.js}"></script>
+    <script type="text/javascript" th:src="@{/style/vendor/footable-bootstrap/js/footable.min.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.22.2/bootstrap-table.min.css"
+        integrity="sha512-vFkhu2Ld9ZS0m+X4R3vefws1NlSdKAlhnqsGDL31gmyWHfw+OphvQFKI/ttDQj5dB5/5xIQBj3zJyDge4zf5tw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.22.2/bootstrap-table.min.js"
+        integrity="sha512-G+yKiJBT1fGJEfud/Xymw9yLnZcxHEMAyjWoNQxTHTlnCYszXGtoLbMiFKQktjjag7+PyDfwWjOxlnH/yoBd7A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript" th:src="@{/style/vendor/alertify/alertify.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" th:src="@{/style/vendor/select2/js/select2.min.js}"></script>
+    <script type="text/javascript"
+        th:src="@{/style/vendor/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js}"></script>
+    <script type="text/javascript" th:src="@{/style/vendor/bootstrapValidator/bootstrapValidator.min.js}"></script>
+    <script th:src="@{/style/vendor/slick/slick.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+
+</head>
+
+<body>
+    <nav th:fragment="navbar">
+        <div class="overlay-common"></div>
+        <div class="header">
+            <div class="relative content">
+                <div class="logo-text">
+                    <a href="#" class="logo">
+                        <img src="https://vnpt.com.vn/design/images/logo-vnpt.jpg?w=130" alt="">
+                    </a>
+                    <div class="header-title">Hệ thống quản lý công việc</div>
+                    <div class="header-sologan">VNPT Thái Bình</div>
+                </div>
+                <div class="nav-toggle">
+                    <span class="-ap icon icon-menu"></span>
+                </div>
+                <div class="header-account dropdown">
+                    <div class="user" data-toggle="dropdown">
+                        <div class="avatar"
+                            style="background-image: url(https://genpartners.genvita.vn/resources/avatar/40fbb3bd-e292-45f6-8475-75bfa897863f?width=119&height=119&mode=crop);">
+
+                        </div>
+                        <div class="username" th:text="${staffName}"></div>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><span class="-ap icon-user6 icon"></span> Trang cá nhân</a></li>
+                        <li><a href="#"><span class="-ap icon-log-out icon"></span> Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="nav-custom-sidebar">
+            <ul class="menus">
+                <li class="active">
+                    <a th:href="main"><span class="icon -ap icon-dashboard"></span> Trang chủ </a>
+                </li>
+                <li th:if="${role.contains('A')}">
+                    <a th:href="main"><span class="icon -ap icon-settings"></span> Quản trị hệ thống <span
+                            class="down -ap icon-keyboard_arrow_right"></span></a>
+                    <ul>
+                        <li><a th:href="@{addfield}">Thêm lĩnh vực</a></li>
+                        <li><a th:href="@{addgroup}">Thêm nhóm thuộc trung tâm</a></li>
+                        <li><a th:href="@{addstaff}">Thêm nhân viên</a></li>
+                        <li><a th:href="@{register}">Thêm người dùng hệ thống</a></li>
+                    </ul>
+                </li>
+                <li th:if="${role.contains('B')}">
+                    <a th:href="main"><span class="icon -ap icon-v-card"></span> Xem kế hoạch toàn trung tâm <span
+                            class="down -ap icon-keyboard_arrow_right"></span></a>
+                    <ul>
+                        <li><a th:href="@{planmonth}">Kế hoạch tháng</a></li>
+                        <li><a th:href="@{plan/approve}">Kế hoạch tuần</a></li>
+                    </ul>
+                </li>
+                <li th:if="${role.contains('C')}">
+                    <a th:href="main"><span class="icon -ap icon-file-text"></span>Xem kế hoạch nhóm <span
+                            class="down -ap icon-keyboard_arrow_right"></span></a>
+                    <ul>
+                        <li><a th:href="@{planmonth}">Kế hoạch tháng</a></li>
+                        <li><a th:href="@{plan/approve}">Kế hoạch tuần</a></li>
+                    </ul>
+                </li>
+                <li th:if="${role.contains('C')|| role.contains('B')}">
+                    <a th:href="main"><span class="icon -ap icon-file-text"></span>Quản lý KPI<span
+                            class="down -ap icon-keyboard_arrow_right"></span></a>
+                    <ul>
+                        <li  th:if="${role.contains('B')}"><a th:href="@{addkpi}">Xem KPI toàn trung tâm</a></li>
+                        <li  th:if="${role.contains('C')}"><a th:href="@{addkpi}">Nhập KPI của nhóm</a></li>
+                        <li  th:if="${role.contains('C')}"><a th:href="main">Giao KPI cho cá nhân</a></li>
+                    </ul>
+                </li>
+                <li th:if="${role.contains('D')}"><a th:href="@{planmonth}">Nhập kế hoạch tháng</a></li>
+                <li th:if="${role.contains('D')}"><a th:href="@{plan/index}">Nhập kế hoạch tuần và báo cáo</a></li>
+                <li th:if="${role.contains('D')}"><a th:href="main">Chấm điểm KPI tháng</a></li>
+            </ul>
+        </div>
+    </nav>
+</body>
+<script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script type="text/javascript" th:src="@{/style/js/custom.js}"></script>
+<script th:src="@{/style/vendor/FormatUtil.js}"></script>
+<script th:src="@{/style/vendor/ApiService.js}"></script>
+<script th:src="@{/style/vendor/FormUtil.js}"></script>
+<script th:src="@{/style/vendor/UIUtil.js}"></script>
+
+
+</html>

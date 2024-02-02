@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>VNPT quản lý công việc</title>
+</head>
+
+<body>
+<div th:replace="fragments/navbar" th:with="pageTitle='Index'"></div>
+
+	<script type="text/javascript" th:src="@{/assets/bootstrap/js/jquery-3.4.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.min.js}"></script>
+	<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootstrap-datepicker.ja.min.js}"></script>
+	<script type="text/javascript" th:src="@{/assets/bootstrap/js/bootbox.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/base.js}"></script>
+	<script type="text/javascript" th:inline="javascript">
+		var Globals = {
+			contextroot: /*[[@{/}]]*/''
+		}
+
+		function register() {
+			$('#VP002Form').attr('action', Globals.contextroot + 'register/add');
+			$('#VP002Form').submit();
+			return false;
+		}
+
+	</script>
+</body>
+
+</html>
